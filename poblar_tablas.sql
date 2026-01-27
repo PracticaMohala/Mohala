@@ -1,4 +1,4 @@
--- =========================
+--- =========================
 -- Poblamiento de tabla Dimension
 -- =========================
 INSERT INTO dimension (id_dimension, nombre_dimension)
@@ -20,7 +20,7 @@ VALUES
 -- =========================
 
 -- Cargos Operativos (Nivel 1)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
+INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (1, 'Analista', 1),
 (2, 'Técnico en Informática', 1),
 (3, 'Asistente Administrativo', 1),
@@ -38,7 +38,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
 (15, 'Digitador', 1);
 
 -- Cargos Tácticos (Nivel 2)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
+INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (16, 'Supervisor de Ventas', 2),
 (17, 'Jefe de Área', 2),
 (18, 'Coordinador de Proyectos', 2),
@@ -56,7 +56,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
 (30, 'Coordinador Académico', 2);
 
 -- Cargos Estratégicos (Nivel 3)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
+INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (31, 'Gerente General', 3),
 (32, 'Director de Operaciones', 3),
 (33, 'Director Médico', 3),
@@ -77,9 +77,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id) VALUES
 -- Poblamiento de tabla Competencia
 -- =========================
 
--- =========================
 -- Competencias Organizacionales (Dimension 1)
--- =========================
 INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
 (1, 'Creatividad e Innovacion', 1),
 (2, 'Enfoque de Negocio', 1),
@@ -87,9 +85,7 @@ INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimens
 (4, 'Trabajo en Equipo', 1),
 (5, 'Vision Global y Sistematica', 1);
 
--- =========================
 -- Competencias Funcionales (Dimension 2)
--- =========================
 INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
 (6, 'Analisis y Solucion de Problemas', 2),
 (7, 'Aprendizaje e Innovacion', 2),
