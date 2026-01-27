@@ -12,7 +12,6 @@ class Dimension(models.Model):
         return self.nombre_dimension
 
 
-
 class NivelJerarquico(models.Model):
     id_nivel_jerarquico = models.IntegerField(primary_key=True)
     nombre_nivel_jerarquico = models.CharField(max_length=30)
@@ -20,6 +19,10 @@ class NivelJerarquico(models.Model):
     class Meta:
         managed = False
         db_table = 'nivel_jerarquico'
+
+    def __str__(self):
+        return self.nombre_nivel_jerarquico
+
 
 
 class Cargo(models.Model):
