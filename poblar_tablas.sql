@@ -12,8 +12,8 @@ VALUES
 INSERT INTO nivel_jerarquico (id_nivel_jerarquico, nombre_nivel_jerarquico)
 VALUES 
 (1, 'Operativo'),
-(2, 'Táctico'),
-(3, 'Estratégico');
+(2, 'Tactico'),
+(3, 'Estrategico');
 
 -- =========================
 -- Poblamiento de tabla Cargo
