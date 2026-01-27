@@ -57,7 +57,7 @@ class Trabajador(models.Model):
 
 class Competencia(models.Model):
     id_competencia = models.IntegerField(primary_key=True)
-    nombre_competencia = models.CharField(max_length=30)
+    nombre_competencia = models.CharField(max_length=50)
     dimension_id_dimension = models.IntegerField()
 
     class Meta:
