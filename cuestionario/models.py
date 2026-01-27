@@ -1,14 +1,5 @@
 from django.db import models
 
-class Dimension(models.Model):
-    id_dimension = models.IntegerField(primary_key=True)
-    nombre_dimension = models.CharField(max_length=30)
-
-    class Meta:
-        managed = False
-        db_table = 'dimension'
-
-
 class NivelJerarquico(models.Model):
     id_nivel_jerarquico = models.IntegerField(primary_key=True)
     nombre_nivel_jerarquico = models.CharField(max_length=30)
@@ -26,13 +17,13 @@ class Trabajador(models.Model):
     apellido_materno = models.CharField(max_length=40)
     email = models.CharField(max_length=80)
     departamento = models.CharField(max_length=40)
-    cargo = models.CharField(max_length=40)
     genero = models.CharField(max_length=10)
-    nivel_jerarquico_id_nivel_jerarquico = models.IntegerField()
+    cargo = models.ForeignKey(Cargo, on_delete=models.CASCADE)
 
     class Meta:
         managed = False
         db_table = 'trabajador'
+
 
 
 class Competencia(models.Model):
@@ -84,3 +75,14 @@ class EvaluacionJefatura(models.Model):
     class Meta:
         managed = False
         db_table = 'evaluacion_jefatura'
+
+
+class Cargo(models.Model):
+    id_cargo = models.IntegerField(primary_key=True)
+    nombre_cargo = models.CharField(max_length=40)
+    nivel_jerarquico = models.ForeignKey(NivelJerarquico, on_delete=models.CASCADE)
+
+    class Meta:
+        managed = False
+        db_table = 'cargo'
+

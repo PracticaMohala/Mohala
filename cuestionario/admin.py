@@ -6,7 +6,8 @@ from .models import (
     Competencia,
     TextosEvaluacion,
     Autoevaluacion,
-    EvaluacionJefatura
+    EvaluacionJefatura,
+    Cargo
 )
 
 admin.site.register(Dimension)
@@ -16,3 +17,4 @@ admin.site.register(Competencia)
 admin.site.register(TextosEvaluacion)
 admin.site.register(Autoevaluacion)
 admin.site.register(EvaluacionJefatura)
+admin.site.register(Cargo)
