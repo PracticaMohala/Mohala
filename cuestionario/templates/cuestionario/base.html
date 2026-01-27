@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema Mohala{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'cuestionario/css/mohala.css' %}">
+</head>
+<body>
+    <header>
+        <h1>Sistema Mohala</h1>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Sistema Mohala</p>
+    </footer>
+</body>
+</html>
