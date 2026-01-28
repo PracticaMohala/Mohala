@@ -7,6 +7,22 @@ VALUES
 (2, 'Funcionales');
 
 -- =========================
+-- Poblamiento de tabla Departamento
+-- =========================
+INSERT INTO departamento (id_departamento, nombre_departamento)
+VALUES 
+(1, 'Gerencia General'),
+(2, 'Recursos Humanos'),
+(3, 'Tecnología de la Información'),
+(4, 'Operaciones y Logística'),
+(5, 'Comercial y Ventas'),
+(6, 'Finanzas y Contabilidad'),
+(7, 'Marketing y Comunicaciones'),
+(8, 'Servicio al Cliente'),
+(9, 'Producción'),
+(10, 'Calidad y Medio Ambiente');
+
+-- =========================
 -- Poblamiento de tabla Nivel Jerárquico
 -- =========================
 INSERT INTO nivel_jerarquico (id_nivel_jerarquico, nombre_nivel_jerarquico)
