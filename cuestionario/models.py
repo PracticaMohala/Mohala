@@ -102,7 +102,7 @@ class Trabajador(models.Model):
         db_table = 'trabajador'
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido_paterno}"
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
 
 # =========================
 # Tabla Competencia (depende de Dimension)
@@ -205,3 +205,4 @@ class EvaluacionJefatura(models.Model):
     class Meta:
         managed = False
         db_table = 'evaluacion_jefatura'
+    
