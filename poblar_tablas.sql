@@ -155,9 +155,9 @@ VALUES
 -- Reportan a Contabilidad (Jefe ID: 5)
 INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
-(13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@empresa.cl', 'Femenino', 1, 14, 6),   -- Contador
-(14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@empresa.cl', 'Masculino', 1, 14, 6);  -- Contador
-(15, '19.123.456-K', 5, 'Andrea', 'Romero', 'Sanchez' 'a.romero@empresa.cl', 'Femenino', 1, 4, 6) -- Cajero
+(13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@empresa.cl', 'Femenino', 1, 14, 6),
+(14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@empresa.cl', 'Masculino', 1, 14, 6),
+(15, '19.123.456-K', 5, 'Andrea', 'Romero', 'Sanchez', 'a.romero@empresa.cl', 'Femenino', 1, 4, 6);
 
 
 -- =========================
