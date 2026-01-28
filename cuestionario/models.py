@@ -102,7 +102,7 @@ class Trabajador(models.Model):
         db_table = 'trabajador'
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno}"
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} / {self.rut}"
 
 # =========================
 # Tabla Competencia (depende de Dimension)
