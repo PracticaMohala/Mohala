@@ -142,6 +142,10 @@ class TextosEvaluacion(models.Model):
         managed = False
         db_table = 'textos_evaluacion'
 
+    def __str__(self):
+        # Retorna el código y el nombre de la competencia relacionada
+        return f"[{self.codigo_excel}] {self.competencia.nombre_competencia}"
+
 # =========================
 # Tabla Autoevaluacion
 # =========================
