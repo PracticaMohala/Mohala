@@ -158,3 +158,45 @@ VALUES
 (13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@empresa.cl', 'Femenino', 1, 14, 6),   -- Contador
 (14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@empresa.cl', 'Masculino', 1, 14, 6);  -- Contador
 (15, '19.123.456-K', 5, 'Andrea', 'Romero', 'Sanchez' 'a.romero@empresa.cl', 'Femenino', 1, 4, 6) -- Cajero
+
+
+-- =========================
+-- Poblamiento de tabla Textos_Evaluacion
+-- =========================
+
+-- 1. CREATIVIDAD E INNOVACIÓN (ID_COMPETENCIA: 1)
+-- Operativo (Nivel 1), Táctico (Nivel 2), Estratégico (Nivel 3)
+INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+(1, 'CIO1.1', 'Trabaja con mecanismos conocidos y rutinarios.', 1, 1),
+(2, 'CIO1.2', 'Se mueve con facilidad en situaciones conocidas con pautas de acción prefijadas.', 1, 1),
+(3, 'CIO1.3', 'Implementa ideas y soluciones que le permiten resolver situaciones rutinarias y complejas.', 1, 1),
+(4, 'CIT1.1', 'Promueve un estilo de gestión innovador y de vinculación con su entorno...', 1, 2),
+(5, 'CIT1.2', 'Estructura equipos de alto rendimiento, que suelen tener formatos atípicos...', 1, 2),
+(6, 'CIT1.3', 'Lidera la implementación de nuevas ideas y soluciones dentro del negocio...', 1, 2),
+(7, 'CIE1.1', 'Es consultado por pares y subordinados porque se le reconoce por su habilidad...', 1, 3),
+(8, 'CIE1.2', 'Es intelectualmente curioso, le gusta estar informado y mantenerse en constante aprendizaje.', 1, 3),
+(9, 'CIE1.3', 'Plantea mejoras o soluciones nuevas a problemas sencillos y complejos.', 1, 3);
+
+-- 2. ENFOQUE DE NEGOCIO (ID_COMPETENCIA: 2)
+INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+(10, 'ENO2.1', 'Comprende las peculiaridades de los servicios.', 2, 1),
+(11, 'ENO2.2', 'Conoce las estrategias, principios y valores corporativos.', 2, 1),
+(12, 'ENO2.3', 'Invierte tiempo adicional para identificar oportunidades de crecimiento.', 2, 1),
+(13, 'ENT2.1', 'Es capaz de establecer relaciones interpersonales a través del networking.', 2, 2),
+(14, 'ENT2.2', 'Es hábil para adaptarse rápidamente a nuevos contextos laborales.', 2, 2),
+(15, 'ENT2.3', 'Promueve la capacidad para comprender las peculiaridades de los servicios.', 2, 2),
+(16, 'ENE2.1', 'Desarrolla la capacidad de adecuar productos y servicios a la estrategia.', 2, 3),
+(17, 'ENE2.2', 'Referente por su capacidad de identificar y desarrollar oportunidades de negocio.', 2, 3),
+(18, 'ENE2.3', 'Reconocido por su expertise, alto conocimiento cultural y estrategias.', 2, 3);
+
+-- 6. ANÁLISIS Y SOLUCIÓN DE PROBLEMAS (ID_COMPETENCIA: 6) 
+INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+(19, 'ASO1.1', 'Resuelve problemas rutinarios de forma efectiva.', 6, 1),
+(20, 'ASO1.2', 'Acude a sus superiores o pares para crear alternativas.', 6, 1),
+(21, 'ASO1.3', 'Logra detectar las variables que influyen en el problema de forma oportuna.', 6, 1),
+(22, 'AST1.1', 'Utiliza eficazmente datos históricos y actuales para prever tendencias.', 6, 2),
+(23, 'AST1.2', 'Analiza las relaciones entre las distintas partes y causales de un problema.', 6, 2),
+(24, 'AST1.3', 'Aporta soluciones validas para la situación en tiempo y forma.', 6, 2),
+(25, 'ASE1.1', 'Realiza análisis complejos utilizando hipótesis y diferentes escenarios.', 6, 3),
+(26, 'ASE1.2', 'Comprende problemas complejos y los define en torno a principios estratégicos.', 6, 3),
+(27, 'ASE1.3', 'Se anticipa a las situaciones, previendo respuestas adecuadas y rentables.', 6, 3);

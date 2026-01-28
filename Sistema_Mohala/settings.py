@@ -79,7 +79,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sistema_mohala',
         'USER': 'mohala',
-        'PASSWORD': 'MohalaMySql1!',
+        'PASSWORD': 'Mohala1!',
         'HOST': 'localhost',
         'PORT': '3306',
     }
