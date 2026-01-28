@@ -28,8 +28,8 @@ VALUES
 INSERT INTO nivel_jerarquico (id_nivel_jerarquico, nombre_nivel_jerarquico)
 VALUES 
 (1, 'Operativo'),
-(2, 'Tactico'),
-(3, 'Estrategico');
+(2, 'Táctico'),
+(3, 'Estratégico');
 
 -- =========================
 -- Poblamiento de tabla Cargo
@@ -95,23 +95,23 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico)
 
 -- Competencias Organizacionales (Dimension 1)
 INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
-(1, 'Creatividad e Innovacion', 1),
+(1, 'Creatividad e Innovación', 1),
 (2, 'Enfoque de Negocio', 1),
-(3, 'Identificacion Cultural', 1),
+(3, 'Identificación Cultural', 1),
 (4, 'Trabajo en Equipo', 1),
-(5, 'Vision Global y Sistematica', 1);
+(5, 'Visión Global y Sistemática', 1);
 
 -- Competencias Funcionales (Dimension 2)
 INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
-(6, 'Analisis y Solucion de Problemas', 2),
-(7, 'Aprendizaje e Innovacion', 2),
-(8, 'Comunicacion', 2),
-(9, 'Innovacion', 2),
+(6, 'Análisis y Solución de Problemas', 2),
+(7, 'Aprendizaje e Innovación', 2),
+(8, 'Comunicación', 2),
+(9, 'Innovación', 2),
 (10, 'Liderazgo', 2),
 (11, 'Liderazgo y Desarrollo de Equipos', 2),
-(12, 'Orientacion a la Rentabilidad', 2),
-(13, 'Orientacion al Logro', 2),
-(14, 'Planificacion Estrategica', 2),
+(12, 'Orientación a la Rentabilidad', 2),
+(13, 'Orientación al Logro', 2),
+(14, 'Planificación Estratégica', 2),
 (15, 'Proactividad', 2);
 
 -- =========================
