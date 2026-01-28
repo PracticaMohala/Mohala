@@ -113,3 +113,48 @@ INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimens
 (13, 'Orientacion al Logro', 2),
 (14, 'Planificacion Estrategica', 2),
 (15, 'Proactividad', 2);
+
+-- =========================
+-- Poblamiento de tabla Trabajador
+-- =========================
+
+-- NIVEL 1: GERENCIA GENERAL (El tope de la pirámide)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(1, '10.234.567-1', NULL, 'Roberto', 'Méndez', 'Castro', 'r.mendez@empresa.cl', 'Masculino', 3, 31, 1);
+
+-- NIVEL 2: JEFATURAS (Reportan al ID 1)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(2, '12.456.789-2', 1, 'Patricia', 'Lorca', 'Vial', 'p.lorca@empresa.cl', 'Femenino', 2, 20, 2),    -- Jefe RRHH
+(3, '11.345.678-3', 1, 'Andrés', 'Tapia', 'Ruiz', 'a.tapia@empresa.cl', 'Masculino', 2, 29, 3),   -- Jefe TI
+(4, '13.567.890-4', 1, 'Mónica', 'Sánchez', 'Paz', 'm.sanchez@empresa.cl', 'Femenino', 2, 22, 5), -- Subgerente Ventas
+(5, '10.987.654-5', 1, 'Ricardo', 'Peña', 'Luz', 'r.pena@empresa.cl', 'Masculino', 2, 25, 6);    -- Jefe Contabilidad
+
+-- NIVEL 3: ANALISTAS Y OPERATIVOS (Reportan a sus respectivos jefes)
+
+-- Reportan a TI (Jefe ID: 3)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(6, '15.123.456-6', 3, 'Cristián', 'Fuentes', 'Díaz', 'c.fuentes@empresa.cl', 'Masculino', 1, 1, 3), -- Analista Programador
+(7, '16.234.567-7', 3, 'Loreto', 'Urrutia', 'Mesa', 'l.urrutia@empresa.cl', 'Femenino', 1, 2, 3),    -- Analista QA
+(8, '17.345.678-8', 3, 'Felipe', 'Rivas', 'González', 'f.rivas@empresa.cl', 'Masculino', 1, 3, 3); -- Soporte Técnico
+
+-- Reportan a RRHH (Jefe ID: 2)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(9, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@empresa.cl', 'Femenino', 1, 8, 2),   -- Analista Selección
+(10, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@empresa.cl', 'Masculino', 1, 10, 2); -- Administrativo RRHH
+
+-- Reportan a Ventas (Jefa ID: 4)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(11, '20.678.901-1', 4, 'Claudia', 'Núñez', 'Vera', 'c.nunez@empresa.cl', 'Femenino', 1, 11, 5),   -- Ejecutivo Ventas
+(12, '21.789.012-2', 4, 'Jorge', 'Guerra', 'Silva', 'j.guerra@empresa.cl', 'Masculino', 1, 11, 5); -- Ejecutivo Ventas
+
+-- Reportan a Contabilidad (Jefe ID: 5)
+INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+VALUES 
+(13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@empresa.cl', 'Femenino', 1, 14, 6),   -- Contador
+(14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@empresa.cl', 'Masculino', 1, 14, 6);  -- Contador
+(15, '19.123.456-K', 5, 'Andrea', 'Romero', 'Sanchez' 'a.romero@empresa.cl', 'Femenino', 1, 4, 6) -- Cajero
