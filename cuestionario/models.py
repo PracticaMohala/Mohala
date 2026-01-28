@@ -101,6 +101,11 @@ class Trabajador(models.Model):
         managed = False
         db_table = 'trabajador'
 
+    # Identifica si el trabajador tiene personas a cargo
+    @property
+    def es_jefe(self):
+        return self.subordinados.exists()
+
     def __str__(self):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} | {self.rut}"
 

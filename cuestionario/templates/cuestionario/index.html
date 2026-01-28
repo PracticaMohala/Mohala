@@ -1,8 +1,49 @@
 {% extends "cuestionario/base.html" %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Inicio - {{ trabajador.nombre }}{% endblock %}
 
 {% block content %}
-    <h2>Sistema Mohala</h2>
-    <p>Bienvenido al Sistema Mohala.</p>
+    <section class="perfil-usuario">
+        <h2>Bienvenido, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }}</h2>
+        <p><strong>Cargo:</strong> {{ trabajador.cargo.nombre_cargo }}</p>
+        <p><strong>Departamento:</strong> {{ trabajador.departamento.nombre_departamento }}</p>
+    </section>
+
+    <hr>
+
+    <section class="acciones-evaluacion">
+        <div class="card autoevaluacion">
+            <h3>Mi Autoevaluación</h3>
+            <p>Se han cargado <strong>{{ preguntas.count }}</strong> competencias para tu nivel: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em>.</p>
+            <a href="#" class="btn-evaluar">Comenzar mi Autoevaluación</a>
+        </div>
+
+        {% if es_jefe %}
+        <div class="card equipo" style="border: 1px solid #2c3e50; margin-top: 20px; padding: 15px;">
+            <h3>Panel de Jefatura</h3>
+            <p>Selecciona un colaborador para evaluar su desempeño:</p>
+            <ul class="lista-equipo">
+                {% for subordinado in equipo %}
+                <li>
+                    {{ subordinado.nombre }} {{ subordinado.apellido_paterno }} 
+                    <small>({{ subordinado.cargo.nombre_cargo }})</small>
+                    <a href="#" class="btn-subordinado">Evaluar</a>
+                </li>
+                {% empty %}
+                    <li>No hay subordinados registrados.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </section>
+
+    <section class="detalle-preguntas" style="margin-top: 30px; opacity: 0.7;">
+        <h4>Preguntas cargadas para tu nivel:</h4>
+        <small>Estas son las competencias que evaluaremos según tu rango jerárquico.</small>
+        <ul>
+            {% for p in preguntas %}
+                <li><strong>{{ p.codigo_excel }}:</strong> {{ p.competencia.nombre_competencia }}</li>
+            {% endfor %}
+        </ul>
+    </section>
 {% endblock %}
