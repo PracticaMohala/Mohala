@@ -6,7 +6,7 @@
     <section class="perfil-usuario">
         <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</h2>
         <p><strong>Cargo:</strong> {{ trabajador.cargo.nombre_cargo }}</p>
-        <p><strong>Departamento:</strong> {{ trabajador.departamento.nombre_departamento }}</p>
+        <p><strong>Departamento:</strong> {{ trabajador.departamento.nombre_departmento }}</p>
     </section>
 
     <hr>
@@ -14,13 +14,20 @@
     <section class="acciones-evaluacion">
         <div class="card autoevaluacion" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
             <h3>Mi Autoevaluación</h3>
-            <p>Se han cargado <strong>{{ preguntas.count }}</strong> competencias para tu nivel: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em>.</p>
             
-            <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" 
-               class="btn-evaluar" 
-               style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-               Comenzar mi Autoevaluación
-            </a>
+            {% if ya_hizo_autoevaluacion %}
+                <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border: 1px solid #c3e6cb; display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2em;">✅</span>
+                    <span><strong>Proceso Completado:</strong> Ya has registrado tu autoevaluación para este periodo.</span>
+                </div>
+            {% else %}
+                <p>Se han cargado <strong>{{ preguntas.count }}</strong> competencias para tu nivel: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em>.</p>
+                <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" 
+                   class="btn-evaluar" 
+                   style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                   Comenzar mi Autoevaluación
+                </a>
+            {% endif %}
         </div>
 
         {% if es_jefe %}
@@ -29,17 +36,23 @@
             <p>Selecciona un colaborador para evaluar su desempeño:</p>
             <ul class="lista-equipo" style="list-style: none; padding: 0;">
                 {% for subordinado in equipo %}
-                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee;">
                     <div>
                         <strong>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }} {{ subordinado.apellido_materno }}</strong>
-                        <br><small>({{ subordinado.cargo.nombre_cargo }})</small>
+                        <br><small style="color: #666;">{{ subordinado.cargo.nombre_cargo }}</small>
                     </div>
                     
-                    <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" 
-                       class="btn-subordinado" 
-                       style="color: white; background-color: #28a745; text-decoration: none; font-weight: bold; padding: 8px 15px; border-radius: 5px;">
-                        Evaluar Colaborador →
-                    </a>
+                    {% if subordinado.ya_evaluado %}
+                        <span style="color: #28a745; font-weight: bold; background-color: #eaffea; padding: 6px 12px; border-radius: 20px; border: 1px solid #28a745; font-size: 0.85em;">
+                            ✅ Evaluado
+                        </span>
+                    {% else %}
+                        <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" 
+                           class="btn-subordinado" 
+                           style="color: white; background-color: #28a745; text-decoration: none; font-weight: bold; padding: 8px 15px; border-radius: 5px; font-size: 0.9em;">
+                            Evaluar Colaborador →
+                        </a>
+                    {% endif %}
                 </li>
                 {% empty %}
                     <li>No hay subordinados registrados.</li>
