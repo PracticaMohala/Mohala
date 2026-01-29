@@ -175,6 +175,8 @@ class Autoevaluacion(models.Model):
     class Meta:
         managed = False
         db_table = 'autoevaluacion'
+        # Restricción: Un trabajador solo una respuesta por código de evaluación
+        unique_together = (('trabajador', 'codigo_excel'),)
 
     def __str__(self):
         return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | {self.trabajador.nombre} {self.trabajador.apellido_paterno} | {self.trabajador.rut}"
@@ -210,6 +212,8 @@ class EvaluacionJefatura(models.Model):
     class Meta:
         managed = False
         db_table = 'evaluacion_jefatura'
+        # Restricción: El jefe solo puede evaluar una vez cada competencia de su subordinado
+        unique_together = (('evaluador', 'trabajador_evaluado', 'codigo_excel'),)
     
     def __str__(self):
-        return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | Jefe: {self.evaluador.nombre} {self.evaluador.apellido_paterno} {self.evaluador.apellido_materno} -> Trabajador Evaluado: {self.trabajador_evaluado.nombre} {self.trabajador_evaluado.apellido_paterno} {self.trabajador_evaluado.apellido_materno}"
+        return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | Jefe: {self.evaluador.nombre} {self.evaluador.apellido_paterno} -> Trabajador Evaluado: {self.trabajador_evaluado.nombre} {self.trabajador_evaluado.apellido_paterno}"
