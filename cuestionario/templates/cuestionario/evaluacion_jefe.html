@@ -5,7 +5,7 @@
 <p>Evaluador: <strong>{{ evaluador.nombre }} {{ evaluador.apellido_paterno }} {{ evaluador.apellido_materno }}</strong></p>
 <p>Evaluando a: <strong style="color: blue;">{{ evaluado.nombre }} {{ evaluado.apellido_paterno }} {{ evaluado.apellido_materno }}</strong></p>
 
-<form method="POST">
+<form method="POST" onsubmit="this.btnSubmit.disabled=true; this.btnSubmit.innerText='Guardando...'; return true;">
     {% csrf_token %}
     <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
         <thead style="background-color: #e3f2fd;">
@@ -32,11 +32,16 @@
         </tbody>
     </table>
 
-    <div style="margin-top: 20px;">
-        <button type="submit" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+    <div style="margin-top: 20px; padding: 15px; background-color: #f0f7ff; border-radius: 5px; border: 1px solid #d1e9ff;">
+        <label for="comentario"><strong>Observaciones de la Jefatura sobre el desempeño del colaborador:</strong></label><br>
+        <textarea name="comentario" rows="3" style="width: 100%; margin-top: 10px;" placeholder="Escriba aquí sus comentarios técnicos o feedback..."></textarea>
+    </div>
+
+    <div style="margin-top: 20px; padding-bottom: 30px;">
+        <button type="submit" name="btnSubmit" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">
             Finalizar Evaluación
         </button>
-        <a href="{% url 'index' %}?id={{ evaluador.id_trabajador }}" style="margin-left: 10px;">Volver</a>
+        <a href="{% url 'index' %}?id={{ evaluador.id_trabajador }}" style="margin-left: 10px; text-decoration: none; color: #666;">Volver</a>
     </div>
 </form>
 {% endblock %}
