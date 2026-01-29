@@ -1,22 +1,59 @@
-<!DOCTYPE html>
+{% load static %}
+<!DOCTYPE HTML>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Sistema Mohala{% endblock %}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'cuestionario/css/mohala.css' %}">
-</head>
-<body>
-    <header>
-        <h1>Sistema Mohala</h1>
-    </header>
+    <head>
+        <title>{% block title %}Sistema Mohala{% endblock %}</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+        
+        <link rel="stylesheet" href="{% static 'cuestionario/css/main.css' %}" />
+        <noscript><link rel="stylesheet" href="{% static 'cuestionario/css/noscript.css' %}" /></noscript>
+        
+        <link rel="stylesheet" href="{% static 'cuestionario/css/mohala.css' %}">
+    </head>
+    <body class="is-preload">
 
-    <main>
-        {% block content %}{% endblock %}
-    </main>
+        <section id="sidebar">
+                <div class="inner">
+                    <nav>
+                        <ul>
+                            <li><a href="/?id={{ trabajador.id_trabajador|default:1 }}">Inicio</a></li>
+                            <li><a href="#footer">Ayuda / Soporte</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </section>
 
-    <footer>
-        <p>&copy; 2026 Sistema Mohala</p>
-    </footer>
-</body>
+        <div id="wrapper">
+                <section id="main" class="wrapper style1 fullscreen fade-up">
+                    <div class="inner">
+                        <header>
+                            <h1 style="border-bottom: solid 2px rgba(255, 255, 255, 0.125); padding-bottom: 0.5em;">
+                                Sistema Mohala
+                            </h1>
+                        </header>
+                        
+                        {% block content %}{% endblock %}
+                    </div>
+                </section>
+            </div>
+
+        <footer id="footer" class="wrapper style1-alt">
+                <div class="inner">
+                    <ul class="menu">
+                        <li>&copy; 2026 Sistema Mohala.</li>
+                        <li>Diseño: <a href="http://html5up.net">HTML5 UP</a></li>
+                    </ul>
+                </div>
+            </footer>
+
+        <script src="{% static 'cuestionario/js/jquery.min.js' %}"></script>
+            <script src="{% static 'cuestionario/js/jquery.scrollex.min.js' %}"></script>
+            <script src="{% static 'cuestionario/js/jquery.scrolly.min.js' %}"></script>
+            <script src="{% static 'cuestionario/js/browser.min.js' %}"></script>
+            <script src="{% static 'cuestionario/js/breakpoints.min.js' %}"></script>
+            <script src="{% static 'cuestionario/js/util.js' %}"></script>
+            <script src="{% static 'cuestionario/js/main.js' %}"></script>
+
+    </body>
 </html>

@@ -3,73 +3,87 @@
 {% block title %}Inicio - {{ trabajador.nombre }}{% endblock %}
 
 {% block content %}
-    <section class="perfil-usuario">
-        <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</h2>
-        <p><strong>Cargo:</strong> {{ trabajador.cargo.nombre_cargo }}</p>
-        <p><strong>Departamento:</strong> {{ trabajador.departamento.nombre_departmento }}</p>
+    <section>
+        <header>
+            <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }}</h2>
+            <p><strong>{{ trabajador.cargo.nombre_cargo }}</strong> | {{ trabajador.departamento.nombre_departmento }}</p>
+        </header>
     </section>
 
-    <hr>
-
-    <section class="acciones-evaluacion">
-        <div class="card autoevaluacion" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    <div class="features">
+        <section>
+            <span class="icon solid major fa-user-check"></span>
             <h3>Mi Autoevaluación</h3>
             
             {% if ya_hizo_autoevaluacion %}
-                <div style="background-color: #d4edda; color: #155724; padding: 15px; border-radius: 5px; border: 1px solid #c3e6cb; display: flex; align-items: center; gap: 10px;">
-                    <span style="font-size: 1.2em;">✅</span>
-                    <span><strong>Proceso Completado:</strong> Ya has registrado tu autoevaluación para este periodo.</span>
-                </div>
+                <p style="color: #51ff85;">✅ <strong>Proceso Completado:</strong> Tu registro ya se encuentra en el sistema.</p>
             {% else %}
-                <p>Se han cargado <strong>{{ preguntas.count }}</strong> competencias para tu nivel: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em>.</p>
-                <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" 
-                   class="btn-evaluar" 
-                   style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">
-                   Comenzar mi Autoevaluación
-                </a>
-            {% endif %}
-        </div>
-
-        {% if es_jefe %}
-        <div class="card equipo" style="border: 2px solid #2c3e50; margin-top: 20px; padding: 20px; border-radius: 8px;">
-            <h3>Panel de Jefatura</h3>
-            <p>Selecciona un colaborador para evaluar su desempeño:</p>
-            <ul class="lista-equipo" style="list-style: none; padding: 0;">
-                {% for subordinado in equipo %}
-                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #eee;">
-                    <div>
-                        <strong>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }} {{ subordinado.apellido_materno }}</strong>
-                        <br><small style="color: #666;">{{ subordinado.cargo.nombre_cargo }}</small>
-                    </div>
-                    
-                    {% if subordinado.ya_evaluado %}
-                        <span style="color: #28a745; font-weight: bold; background-color: #eaffea; padding: 6px 12px; border-radius: 20px; border: 1px solid #28a745; font-size: 0.85em;">
-                            ✅ Evaluado
-                        </span>
-                    {% else %}
-                        <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" 
-                           class="btn-subordinado" 
-                           style="color: white; background-color: #28a745; text-decoration: none; font-weight: bold; padding: 8px 15px; border-radius: 5px; font-size: 0.9em;">
-                            Evaluar Colaborador →
+                <p>Tienes <strong>{{ preguntas.count }}</strong> competencias asignadas según tu nivel jerárquico.</p>
+                <ul class="actions">
+                    <li>
+                        <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" class="button primary scrolly">
+                            Comenzar ahora
                         </a>
-                    {% endif %}
-                </li>
-                {% empty %}
-                    <li>No hay subordinados registrados.</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-    </section>
+                    </li>
+                </ul>
+            {% endif %}
+        </section>
 
-    <hr>
+        <section>
+            <span class="icon solid major fa-list-alt"></span>
+            <h3>Competencias</h3>
+            <p>Se evaluarán áreas como: 
+                {% for p in preguntas|slice:":3" %}
+                    <em>{{ p.competencia.nombre_competencia }}</em>{% if not forloop.last %}, {% endif %}
+                {% endfor %}...
+            </p>
+        </section>
+    </div>
 
-    <section class="detalle-preguntas" style="margin-top: 30px; opacity: 0.8; font-size: 0.9em;">
-        <h4>Resumen de competencias a evaluar:</h4>
-        <ul>
-            {% for p in preguntas %}
-                <li><strong>{{ p.codigo_excel }}:</strong> {{ p.competencia.nombre_competencia }}</li>
-            {% endfor %}
-        </ul>
+    {% if es_jefe %}
+    <section id="jefatura" class="wrapper style2 spotlights" style="margin-top: 2em; border-radius: 10px; overflow: hidden;">
+        <section>
+            <div class="content">
+                <div class="inner">
+                    <h2>Panel de Jefatura</h2>
+                    <p>Gestiona la evaluación de desempeño de tu equipo directo:</p>
+                    
+                    <div class="table-wrapper">
+                        <table class="alt">
+                            <thead>
+                                <tr>
+                                    <th>Colaborador</th>
+                                    <th>Cargo</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for subordinado in equipo %}
+                                <tr>
+                                    <td>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }}</td>
+                                    <td>{{ subordinado.cargo.nombre_cargo }}</td>
+                                    <td>
+                                        {% if subordinado.ya_evaluado %}
+                                            <span style="color: #51ff85; font-weight: bold;">✅ Finalizado</span>
+                                        {% else %}
+                                            <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" class="button small">
+                                                Evaluar →
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">No hay subordinados asignados.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
     </section>
+    {% endif %}
+
 {% endblock %}

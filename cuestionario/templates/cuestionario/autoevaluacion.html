@@ -1,46 +1,70 @@
 {% extends "cuestionario/base.html" %}
 
+{% block title %}Autoevaluación - {{ trabajador.nombre }}{% endblock %}
+
 {% block content %}
-<h2>Mi Autoevaluación de Desempeño</h2>
-<p>Trabajador: <strong>{{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</strong></p>
-<p>Nivel: <strong>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</strong></p>
+<section>
+    <header>
+        <h2>Mi Autoevaluación de Desempeño</h2>
+        <p>Registrando respuestas para: <strong>{{ trabajador.nombre }} {{ trabajador.apellido_paterno }}</strong><br>
+        Nivel Jerárquico: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em></p>
+    </header>
 
-<form method="POST" onsubmit="this.btnSubmit.disabled=true; this.btnSubmit.innerText='Procesando...'; return true;">
-    {% csrf_token %}
-    <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
-        <thead style="background-color: #f1f8e9;"> <tr>
-                <th>Código</th>
-                <th>Competencia / Descripción</th>
-                <th style="width: 150px;">Mi Puntaje (0-100)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for p in preguntas %}
-            <tr>
-                <td style="padding: 10px; text-align: center;">{{ p.codigo_excel }}</td>
-                <td style="padding: 10px;">
-                    <strong>{{ p.competencia.nombre_competencia }}</strong><br>
-                    <small>{{ p.texto }}</small>
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    <input type="number" name="puntaje_{{ p.id_textos_evaluacion }}" 
-                           min="0" max="100" required style="width: 60px;">
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="POST" onsubmit="this.btnSubmit.disabled=true; this.btnSubmit.innerText='Procesando...'; return true;">
+        {% csrf_token %}
+        
+        <div class="table-wrapper">
+            <table class="alt">
+                <thead>
+                    <tr>
+                        <th style="width: 10%;">Código</th>
+                        <th style="width: 70%;">Competencia / Descripción</th>
+                        <th style="width: 20%; text-align: center;">Puntaje (0-100)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in preguntas %}
+                    <tr>
+                        <td style="vertical-align: middle; text-align: center;"><strong>{{ p.codigo_excel }}</strong></td>
+                        <td>
+                            <span style="color: #51ff85; font-weight: bold;">{{ p.competencia.nombre_competencia }}</span><br>
+                            <small style="line-height: 1.2; display: block; margin-top: 5px;">{{ p.texto }}</small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <input type="number" name="puntaje_{{ p.id_textos_evaluacion }}" 
+                                   min="0" max="100" required 
+                                   placeholder="0-100"
+                                   style="background: rgba(255,255,255,0.05); color: white; border: 1px solid rgba(255,255,255,0.2);">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
-    <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 5px;">
-        <label for="comentario"><strong>Comentarios adicionales sobre tu desempeño:</strong></label><br>
-        <textarea name="comentario" rows="3" style="width: 100%; margin-top: 10px;" placeholder="Opcional..."></textarea>
-    </div>
+        <div class="row gtr-uniform" style="margin-top: 2em;">
+            <div class="col-12">
+                <label for="comentario"><strong>Comentarios adicionales:</strong></label>
+                <textarea name="comentario" id="comentario" rows="4" 
+                          placeholder="Escribe aquí cualquier observación sobre tu desempeño en este periodo..."
+                          style="background: rgba(255,255,255,0.05); color: white;"></textarea>
+            </div>
 
-    <div style="margin-top: 20px; padding-bottom: 30px;">
-        <button type="submit" name="btnSubmit" style="background-color: #4CAF50; color: white; padding: 10px 25px; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">
-            Finalizar mi Autoevaluación
-        </button>
-        <a href="{% url 'index' %}?id={{ trabajador.id_trabajador }}" style="margin-left: 15px; text-decoration: none; color: #666;">Cancelar y volver</a>
-    </div>
-</form>
+            <div class="col-12" style="margin-top: 2em; padding-bottom: 3em;">
+                <ul class="actions">
+                    <li>
+                        <button type="submit" name="btnSubmit" class="button primary">
+                            Finalizar Autoevaluación
+                        </button>
+                    </li>
+                    <li>
+                        <a href="{% url 'index' %}?id={{ trabajador.id_trabajador }}" class="button">
+                            Cancelar
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</section>
 {% endblock %}
