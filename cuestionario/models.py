@@ -4,7 +4,7 @@ from django.db import models
 # Tabla Dimension
 # =========================
 class Dimension(models.Model):
-    id_dimension = models.IntegerField(primary_key=True)
+    id_dimension = models.AutoField(primary_key=True)
     nombre_dimension = models.CharField(max_length=50)
 
     class Meta:
@@ -18,7 +18,7 @@ class Dimension(models.Model):
 # Tabla Departamento
 # =========================
 class Departamento(models.Model):
-    id_departamento = models.IntegerField(primary_key=True)
+    id_departamento = models.AutoField(primary_key=True)
     nombre_departamento = models.CharField(max_length=50)
 
     class Meta:
@@ -32,7 +32,7 @@ class Departamento(models.Model):
 # Tabla Nivel Jerarquico
 # =========================
 class NivelJerarquico(models.Model):
-    id_nivel_jerarquico = models.IntegerField(primary_key=True)
+    id_nivel_jerarquico = models.AutoField(primary_key=True)
     nombre_nivel_jerarquico = models.CharField(max_length=50)
 
     class Meta:
@@ -46,7 +46,7 @@ class NivelJerarquico(models.Model):
 # Tabla Cargo (depende de Nivel Jerarquico)
 # =========================
 class Cargo(models.Model):
-    id_cargo = models.IntegerField(primary_key=True)
+    id_cargo = models.AutoField(primary_key=True)
     nombre_cargo = models.CharField(max_length=50)
     nivel_jerarquico = models.ForeignKey(
         'NivelJerarquico', 
@@ -65,7 +65,7 @@ class Cargo(models.Model):
 # Tabla Trabajador (depende de Cargo, Nivel, Depto y Jefe)
 # =========================
 class Trabajador(models.Model):
-    id_trabajador = models.IntegerField(primary_key=True)
+    id_trabajador = models.AutoField(primary_key=True)
     rut = models.CharField(max_length=20, unique=True)
     # Relación recursiva usando 'self'
     id_jefe_directo = models.ForeignKey(
@@ -113,7 +113,7 @@ class Trabajador(models.Model):
 # Tabla Competencia (depende de Dimension)
 # =========================
 class Competencia(models.Model):
-    id_competencia = models.IntegerField(primary_key=True)
+    id_competencia = models.AutoField(primary_key=True)
     nombre_competencia = models.CharField(max_length=50)
     dimension = models.ForeignKey(
         'Dimension', 
@@ -132,7 +132,7 @@ class Competencia(models.Model):
 # Tabla Textos Evaluacion (depende de Competencia y Nivel Jerarquico)
 # =========================
 class TextosEvaluacion(models.Model):
-    id_textos_evaluacion = models.IntegerField(primary_key=True)
+    id_textos_evaluacion = models.AutoField(primary_key=True)
     codigo_excel = models.CharField(max_length=10, unique=True)
     texto = models.TextField()
     competencia = models.ForeignKey(
@@ -158,7 +158,7 @@ class TextosEvaluacion(models.Model):
 # Tabla Autoevaluacion
 # =========================
 class Autoevaluacion(models.Model):
-    id_autoevaluacion = models.IntegerField(primary_key=True)
+    id_autoevaluacion = models.AutoField(primary_key=True)
     puntaje = models.DecimalField(max_digits=5, decimal_places=2)
     fecha_evaluacion = models.DateField()
     momento_evaluacion = models.DateTimeField()
@@ -183,7 +183,7 @@ class Autoevaluacion(models.Model):
 # Tabla Evaluacion Jefatura
 # =========================
 class EvaluacionJefatura(models.Model):
-    id_evaluacion_jefatura = models.IntegerField(primary_key=True)
+    id_evaluacion_jefatura = models.AutoField(primary_key=True)
     puntaje = models.DecimalField(max_digits=5, decimal_places=2)
     evaluador = models.ForeignKey(
         'Trabajador', 
