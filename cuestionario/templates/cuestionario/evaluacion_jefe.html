@@ -1,0 +1,42 @@
+{% extends "cuestionario/base.html" %}
+
+{% block content %}
+<h2>Evaluación de Desempeño (Jefatura)</h2>
+<p>Evaluador: <strong>{{ evaluador.nombre }} {{ evaluador.apellido_paterno }} {{ evaluador.apellido_materno }}</strong></p>
+<p>Evaluando a: <strong style="color: blue;">{{ evaluado.nombre }} {{ evaluado.apellido_paterno }} {{ evaluado.apellido_materno }}</strong></p>
+
+<form method="POST">
+    {% csrf_token %}
+    <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
+        <thead style="background-color: #e3f2fd;">
+            <tr>
+                <th>Código</th>
+                <th>Competencia / Descripción</th>
+                <th style="width: 150px;">Puntaje (0-100)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in preguntas %}
+            <tr>
+                <td style="padding: 10px; text-align: center;">{{ p.codigo_excel }}</td>
+                <td style="padding: 10px;">
+                    <strong>{{ p.competencia.nombre_competencia }}</strong><br>
+                    <small>{{ p.texto }}</small>
+                </td>
+                <td style="padding: 10px; text-align: center;">
+                    <input type="number" name="puntaje_{{ p.id_textos_evaluacion }}" 
+                           min="0" max="100" required style="width: 60px;">
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 20px;">
+        <button type="submit" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+            Finalizar Evaluación
+        </button>
+        <a href="{% url 'index' %}?id={{ evaluador.id_trabajador }}" style="margin-left: 10px;">Volver</a>
+    </div>
+</form>
+{% endblock %}

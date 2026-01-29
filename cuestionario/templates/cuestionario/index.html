@@ -29,11 +29,15 @@
             <p>Selecciona un colaborador para evaluar su desempeño:</p>
             <ul class="lista-equipo" style="list-style: none; padding: 0;">
                 {% for subordinado in equipo %}
-                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px;">
-                    <strong>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }}</strong>
-                    <small>({{ subordinado.cargo.nombre_cargo }})</small>
+                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }} {{ subordinado.apellido_materno }}</strong>
+                        <br><small>({{ subordinado.cargo.nombre_cargo }})</small>
+                    </div>
                     
-                    <a href="#" class="btn-subordinado" style="float: right; color: #28a745; text-decoration: none; font-weight: bold;">
+                    <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" 
+                       class="btn-subordinado" 
+                       style="color: white; background-color: #28a745; text-decoration: none; font-weight: bold; padding: 8px 15px; border-radius: 5px;">
                         Evaluar Colaborador →
                     </a>
                 </li>

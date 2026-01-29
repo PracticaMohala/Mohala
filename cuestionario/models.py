@@ -43,7 +43,7 @@ class NivelJerarquico(models.Model):
         return self.nombre_nivel_jerarquico
 
 # =========================
-# Tabla Cargo (depende de Nivel Jerarquico)
+# Tabla Cargo
 # =========================
 class Cargo(models.Model):
     id_cargo = models.AutoField(primary_key=True)
@@ -62,12 +62,11 @@ class Cargo(models.Model):
         return self.nombre_cargo
 
 # =========================
-# Tabla Trabajador (depende de Cargo, Nivel, Depto y Jefe)
+# Tabla Trabajador
 # =========================
 class Trabajador(models.Model):
     id_trabajador = models.AutoField(primary_key=True)
     rut = models.CharField(max_length=20, unique=True)
-    # Relación recursiva usando 'self'
     id_jefe_directo = models.ForeignKey(
         'self', 
         on_delete=models.DO_NOTHING, 
@@ -101,7 +100,6 @@ class Trabajador(models.Model):
         managed = False
         db_table = 'trabajador'
 
-    # Identifica si el trabajador tiene personas a cargo
     @property
     def es_jefe(self):
         return self.subordinados.exists()
@@ -110,7 +108,7 @@ class Trabajador(models.Model):
         return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} | {self.rut}"
 
 # =========================
-# Tabla Competencia (depende de Dimension)
+# Tabla Competencia
 # =========================
 class Competencia(models.Model):
     id_competencia = models.AutoField(primary_key=True)
@@ -129,7 +127,7 @@ class Competencia(models.Model):
         return self.nombre_competencia
 
 # =========================
-# Tabla Textos Evaluacion (depende de Competencia y Nivel Jerarquico)
+# Tabla Textos Evaluacion
 # =========================
 class TextosEvaluacion(models.Model):
     id_textos_evaluacion = models.AutoField(primary_key=True)
@@ -151,7 +149,6 @@ class TextosEvaluacion(models.Model):
         db_table = 'textos_evaluacion'
 
     def __str__(self):
-        # Retorna el código y el nombre de la competencia relacionada
         return f"[{self.codigo_excel}] {self.competencia.nombre_competencia}"
 
 # =========================
@@ -180,7 +177,7 @@ class Autoevaluacion(models.Model):
         db_table = 'autoevaluacion'
 
     def __str__(self):
-        return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | {self.trabajador.nombre} {self.trabajador.apellido_paterno} {self.trabajador.apellido_materno} | {self.trabajador.rut}"
+        return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | {self.trabajador.nombre} {self.trabajador.apellido_paterno} | {self.trabajador.rut}"
 
 # =========================
 # Tabla Evaluacion Jefatura
@@ -214,5 +211,5 @@ class EvaluacionJefatura(models.Model):
         managed = False
         db_table = 'evaluacion_jefatura'
     
-        def __str__(self):
-            return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | {self.trabajador.nombre} {self.trabajador.apellido_paterno} {self.trabajador.apellido_materno} | {self.trabajador.rut}"
+    def __str__(self):
+        return f"{self.codigo_excel.codigo_excel} | {self.puntaje} | Jefe: {self.evaluador.nombre} {self.evaluador.apellido_paterno} {self.evaluador.apellido_materno} -> Trabajador Evaluado: {self.trabajador_evaluado.nombre} {self.trabajador_evaluado.apellido_paterno} {self.trabajador_evaluado.apellido_materno}"

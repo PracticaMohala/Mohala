@@ -1,44 +1,60 @@
 {% extends "cuestionario/base.html" %}
 
+{% block title %}Inicio - {{ trabajador.nombre }}{% endblock %}
+
 {% block content %}
-<h2>Formulario de Autoevaluación</h2>
-<p>Trabajador: <strong>{{ trabajador.nombre }} {{ trabajador.apellido_paterno }}</strong></p>
-<p>Nivel: {{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</p>
+    <section class="perfil-usuario">
+        <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</h2>
+        <p><strong>Cargo:</strong> {{ trabajador.cargo.nombre_cargo }}</p>
+        <p><strong>Departamento:</strong> {{ trabajador.departamento.nombre_departamento }}</p>
+    </section>
 
-<form method="POST">
-    {% csrf_token %}
-    
-    <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
-        <thead style="background-color: #f2f2f2;">
-            <tr>
-                <th>Código</th>
-                <th>Competencia / Descripción</th>
-                <th style="width: 150px;">Puntaje (0-100)</th>
-            </tr>
-        </thead>
-        <tbody>
+    <hr>
+
+    <section class="acciones-evaluacion">
+        <div class="card autoevaluacion" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+            <h3>Mi Autoevaluación</h3>
+            <p>Se han cargado <strong>{{ preguntas.count }}</strong> competencias para tu nivel: <em>{{ trabajador.nivel_jerarquico.nombre_nivel_jerarquico }}</em>.</p>
+            
+            <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" 
+               class="btn-evaluar" 
+               style="display: inline-block; background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+               Comenzar mi Autoevaluación
+            </a>
+        </div>
+
+        {% if es_jefe %}
+        <div class="card equipo" style="border: 2px solid #2c3e50; margin-top: 20px; padding: 20px; border-radius: 8px;">
+            <h3>Panel de Jefatura</h3>
+            <p>Selecciona un colaborador para evaluar su desempeño:</p>
+            <ul class="lista-equipo" style="list-style: none; padding: 0;">
+                {% for subordinado in equipo %}
+                <li style="margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 4px; overflow: hidden;">
+                    <strong>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }} {{ subordinado.apellido_materno }}</strong>
+                    <small>({{ subordinado.cargo.nombre_cargo }})</small>
+                    
+                    <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" 
+                       class="btn-subordinado" 
+                       style="float: right; color: white; background-color: #28a745; text-decoration: none; font-weight: bold; padding: 5px 15px; border-radius: 4px;">
+                        Evaluar Colaborador →
+                    </a>
+                </li>
+                {% empty %}
+                    <li>No hay subordinados registrados bajo su mando.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </section>
+
+    <hr>
+
+    <section class="detalle-preguntas" style="margin-top: 30px; opacity: 0.8; font-size: 0.9em;">
+        <h4>Resumen de competencias a evaluar:</h4>
+        <ul>
             {% for p in preguntas %}
-            <tr>
-                <td style="padding: 10px; text-align: center;">{{ p.codigo_excel }}</td>
-                <td style="padding: 10px;">
-                    <strong>{{ p.competencia.nombre_competencia }}</strong><br>
-                    <small>{{ p.texto }}</small>
-                </td>
-                <td style="padding: 10px; text-align: center;">
-                    <input type="number" name="puntaje_{{ p.id_textos_evaluacion }}" 
-                           min="0" max="100" step="1" required 
-                           style="width: 60px; padding: 5px;">
-                </td>
-            </tr>
+                <li><strong>{{ p.codigo_excel }}:</strong> {{ p.competencia.nombre_competencia }}</li>
             {% endfor %}
-        </tbody>
-    </table>
-
-    <div style="margin-top: 20px;">
-        <button type="submit" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer;">
-            Guardar Evaluación
-        </button>
-        <a href="{% url 'index' %}?id={{ trabajador.id_trabajador }}" style="margin-left: 10px;">Cancelar</a>
-    </div>
-</form>
+        </ul>
+    </section>
 {% endblock %}
