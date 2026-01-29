@@ -1,4 +1,9 @@
 -- =========================
+-- Recuerda, antes de crear la BD ingresa chcp 65001
+-- para no tener problemas con los caracteres especiales
+-- =========================
+
+-- =========================
 -- Tabla Dimension
 -- =========================
 CREATE TABLE DIMENSION (
