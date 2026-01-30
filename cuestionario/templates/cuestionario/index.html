@@ -16,13 +16,14 @@
             <h3>Mi Autoevaluación</h3>
             
             {% if ya_hizo_autoevaluacion %}
-                <p style="color: #51ff85;">✅ <strong>Proceso Completado:</strong> Tu registro ya se encuentra en el sistema.</p>
+                <p style="color: #51ff85;">✅ <strong>Proceso Completado:</strong> Has finalizado todas tus dimensiones.</p>
+                <a href="{% url 'autoevaluacion_inicio' trabajador.id_trabajador %}" class="button">Ver estado</a>
             {% else %}
-                <p>Tienes <strong>{{ preguntas.count }}</strong> competencias asignadas según tu nivel jerárquico.</p>
+                <p>Presiona el botón para seleccionar la dimensión que deseas evaluar (Organizacional o Funcional).</p>
                 <ul class="actions">
                     <li>
-                        <a href="{% url 'autoevaluacion' trabajador.id_trabajador %}" class="button primary scrolly">
-                            Comenzar ahora
+                        <a href="{% url 'autoevaluacion_inicio' trabajador.id_trabajador %}" class="button primary">
+                            Comenzar Autoevaluación
                         </a>
                     </li>
                 </ul>
@@ -30,13 +31,9 @@
         </section>
 
         <section>
-            <span class="icon solid major fa-list-alt"></span>
-            <h3>Competencias</h3>
-            <p>Se evaluarán áreas como: 
-                {% for p in preguntas|slice:":3" %}
-                    <em>{{ p.competencia.nombre_competencia }}</em>{% if not forloop.last %}, {% endif %}
-                {% endfor %}...
-            </p>
+            <span class="icon solid major fa-info-circle"></span>
+            <h3>Información</h3>
+            <p>Este proceso consta de dos partes obligatorias. Los resultados serán revisados por tu jefatura directa.</p>
         </section>
     </div>
 
@@ -46,7 +43,7 @@
             <div class="content">
                 <div class="inner">
                     <h2>Panel de Jefatura</h2>
-                    <p>Gestiona la evaluación de desempeño de tu equipo directo:</p>
+                    <p>Selecciona a un colaborador para gestionar sus dimensiones de evaluación:</p>
                     
                     <div class="table-wrapper">
                         <table class="alt">
@@ -54,20 +51,22 @@
                                 <tr>
                                     <th>Colaborador</th>
                                     <th>Cargo</th>
-                                    <th>Estado</th>
+                                    <th style="text-align: center;">Acción</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for subordinado in equipo %}
                                 <tr>
-                                    <td>{{ subordinado.nombre }} {{ subordinado.apellido_paterno }}</td>
-                                    <td>{{ subordinado.cargo.nombre_cargo }}</td>
-                                    <td>
+                                    <td style="vertical-align: middle;">{{ subordinado.nombre }} {{ subordinado.apellido_paterno }}</td>
+                                    <td style="vertical-align: middle;">{{ subordinado.cargo.nombre_cargo }}</td>
+                                    <td style="text-align: center;">
                                         {% if subordinado.ya_evaluado %}
-                                            <span style="color: #51ff85; font-weight: bold;">✅ Finalizado</span>
+                                            <a href="{% url 'evaluacion_jefe_inicio' trabajador.id_trabajador subordinado.id_trabajador %}" class="button small">
+                                                ✅ Finalizado (Ver)
+                                            </a>
                                         {% else %}
-                                            <a href="{% url 'evaluacion_jefe' trabajador.id_trabajador subordinado.id_trabajador %}" class="button small">
-                                                Evaluar →
+                                            <a href="{% url 'evaluacion_jefe_inicio' trabajador.id_trabajador subordinado.id_trabajador %}" class="button primary small">
+                                                Evaluar Colaborador →
                                             </a>
                                         {% endif %}
                                     </td>

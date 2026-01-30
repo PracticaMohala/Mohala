@@ -7,42 +7,64 @@ def index(request):
     trabajador_id = request.GET.get('id', 1)
     trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
     
-    # 1. VERIFICACIÓN DE AUTOEVALUACIÓN: Enviamos True si ya existe en la BD
-    ya_hizo_autoevaluacion = Autoevaluacion.objects.filter(trabajador=trabajador).exists()
+    hecho_org = Autoevaluacion.objects.filter(
+        trabajador=trabajador, 
+        codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
+    ).exists()
+    hecho_fun = Autoevaluacion.objects.filter(
+        trabajador=trabajador, 
+        codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
+    ).exists()
     
-    preguntas = TextosEvaluacion.objects.filter(nivel_jerarquico=trabajador.nivel_jerarquico)
-    
-    # 2. VERIFICACIÓN DE EQUIPO: Marcamos a cada subordinado si ya fue evaluado
     equipo = trabajador.subordinados.all()
-    for subordinado in equipo:
-        subordinado.ya_evaluado = EvaluacionJefatura.objects.filter(
+    for sub in equipo:
+        sub_org = EvaluacionJefatura.objects.filter(
             evaluador=trabajador, 
-            trabajador_evaluado=subordinado
+            trabajador_evaluado=sub,
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
         ).exists()
-    
+        sub_fun = EvaluacionJefatura.objects.filter(
+            evaluador=trabajador, 
+            trabajador_evaluado=sub,
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
+        ).exists()
+        sub.ya_evaluado = sub_org and sub_fun
+
     context = {
         'trabajador': trabajador,
-        'preguntas': preguntas,
-        'equipo': equipo,
         'es_jefe': trabajador.subordinados.exists(),
-        'ya_hizo_autoevaluacion': ya_hizo_autoevaluacion, # Esta variable activa el bloqueo en el HTML
+        'equipo': equipo,
+        'ya_hizo_autoevaluacion': hecho_org and hecho_fun,
     }
-    
     return render(request, 'cuestionario/index.html', context)
 
-def cuestionario_autoevaluacion(request, trabajador_id):
+def cuestionario_autoevaluacion(request, trabajador_id, dimension=None):
     trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
     
-    # BLOQUEO DE SEGURIDAD: Si intenta entrar por URL manual y ya existe, lo sacamos
-    if Autoevaluacion.objects.filter(trabajador=trabajador).exists():
-        return redirect(f'/?id={trabajador.id_trabajador}')
-    
-    if request.method == 'POST':
-        preguntas_list = TextosEvaluacion.objects.filter(nivel_jerarquico=trabajador.nivel_jerarquico)
+    if not dimension:
+        hecho_org = Autoevaluacion.objects.filter(
+            trabajador=trabajador, 
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
+        ).exists()
+        hecho_fun = Autoevaluacion.objects.filter(
+            trabajador=trabajador, 
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
+        ).exists()
         
-        # transaction.atomic asegura que se guarden todas las preguntas o ninguna (evita progreso a medias)
+        return render(request, 'cuestionario/autoevaluacion_seleccion.html', {
+            'trabajador': trabajador,
+            'hecho_org': hecho_org,
+            'hecho_fun': hecho_fun
+        })
+
+    preguntas_qs = TextosEvaluacion.objects.filter(
+        nivel_jerarquico=trabajador.nivel_jerarquico,
+        competencia__dimension__nombre_dimension__icontains=dimension
+    ).select_related('competencia__dimension').order_by('competencia__id_competencia')
+
+    if request.method == 'POST':
         with transaction.atomic():
-            for pregunta in preguntas_list:
+            for pregunta in preguntas_qs:
                 puntaje_valor = request.POST.get(f'puntaje_{pregunta.id_textos_evaluacion}')
                 if puntaje_valor:
                     Autoevaluacion.objects.create(
@@ -53,32 +75,46 @@ def cuestionario_autoevaluacion(request, trabajador_id):
                         codigo_excel=pregunta, 
                         comentario=request.POST.get('comentario', '')
                     )
-        
-        return redirect(f'/?id={trabajador.id_trabajador}')
-
-    preguntas = TextosEvaluacion.objects.filter(
-        nivel_jerarquico=trabajador.nivel_jerarquico
-    ).select_related('competencia').order_by('competencia__id_competencia')
+        return redirect('autoevaluacion_inicio', trabajador_id=trabajador.id_trabajador)
 
     context = {
         'trabajador': trabajador,
-        'preguntas': preguntas,
+        'preguntas': preguntas_qs,
+        'dimension': dimension,
     }
     return render(request, 'cuestionario/autoevaluacion.html', context)
 
-def cuestionario_jefatura(request, evaluador_id, evaluado_id):
+def cuestionario_jefatura(request, evaluador_id, evaluado_id, dimension=None):
     evaluador = get_object_or_404(Trabajador, id_trabajador=evaluador_id)
     evaluado = get_object_or_404(Trabajador, id_trabajador=evaluado_id)
     
-    # BLOQUEO DE SEGURIDAD: Si el jefe ya evaluó a este trabajador, lo sacamos
-    if EvaluacionJefatura.objects.filter(evaluador=evaluador, trabajador_evaluado=evaluado).exists():
-        return redirect(f'/?id={evaluador.id_trabajador}')
-    
-    if request.method == 'POST':
-        preguntas_list = TextosEvaluacion.objects.filter(nivel_jerarquico=evaluado.nivel_jerarquico)
+    if not dimension:
+        hecho_org = EvaluacionJefatura.objects.filter(
+            evaluador=evaluador, 
+            trabajador_evaluado=evaluado, 
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
+        ).exists()
+        hecho_fun = EvaluacionJefatura.objects.filter(
+            evaluador=evaluador, 
+            trabajador_evaluado=evaluado, 
+            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
+        ).exists()
         
+        return render(request, 'cuestionario/evaluacion_jefe_seleccion.html', {
+            'evaluador': evaluador,
+            'evaluado': evaluado,
+            'hecho_org': hecho_org,
+            'hecho_fun': hecho_fun
+        })
+
+    preguntas_qs = TextosEvaluacion.objects.filter(
+        nivel_jerarquico=evaluado.nivel_jerarquico,
+        competencia__dimension__nombre_dimension__icontains=dimension
+    ).select_related('competencia__dimension').order_by('competencia__id_competencia')
+
+    if request.method == 'POST':
         with transaction.atomic():
-            for pregunta in preguntas_list:
+            for pregunta in preguntas_qs:
                 puntaje_valor = request.POST.get(f'puntaje_{pregunta.id_textos_evaluacion}')
                 if puntaje_valor:
                     EvaluacionJefatura.objects.create(
@@ -90,16 +126,13 @@ def cuestionario_jefatura(request, evaluador_id, evaluado_id):
                         momento_evaluacion=timezone.now(),
                         comentario=request.POST.get('comentario', '')
                     )
-        
-        return redirect(f'/?id={evaluador.id_trabajador}')
 
-    preguntas = TextosEvaluacion.objects.filter(
-        nivel_jerarquico=evaluado.nivel_jerarquico
-    ).select_related('competencia').order_by('competencia__id_competencia')
+        return redirect('evaluacion_jefe_inicio', evaluador_id=evaluador.id_trabajador, evaluado_id=evaluado.id_trabajador)
 
     context = {
         'evaluador': evaluador,
         'evaluado': evaluado,
-        'preguntas': preguntas,
+        'preguntas': preguntas_qs,
+        'dimension': dimension,
     }
     return render(request, 'cuestionario/evaluacion_jefe.html', context)

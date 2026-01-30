@@ -1,0 +1,50 @@
+{% extends "cuestionario/base.html" %}
+
+{% block title %}Selección de Dimensión - Autoevaluación{% endblock %}
+
+{% block content %}
+<section>
+    <header>
+        <a href="{% url 'index' %}?id={{ trabajador.id_trabajador }}" class="button small">← Volver al Inicio</a>
+        <h2 style="margin-top: 1em;">Mi Autoevaluación</h2>
+        <p>Hola <strong>{{ trabajador.nombre }}</strong>, selecciona el bloque que deseas completar ahora:</p>
+    </header>
+
+    <div class="features">
+        <section style="border: 1px solid rgba(255,255,255,0.1); padding: 2em; border-radius: 8px; background: rgba(255,255,255,0.02); text-align: center;">
+            <h3 style="color: #51ff85;">1. Organizacionales</h3>
+            <p>Valores compartidos y competencias transversales de la organización.</p>
+            
+            {% if hecho_org %}
+                <p style="color: #51ff85; font-weight: bold; margin-bottom: 1em;">✅ Sección Completada</p>
+                <a href="#" class="button disabled fit">Finalizado</a>
+            {% else %}
+                <a href="{% url 'autoevaluacion' trabajador.id_trabajador 'Organizacional' %}" class="button primary fit">
+                    Responder Bloque 1
+                </a>
+            {% endif %}
+        </section>
+
+        <section style="border: 1px solid rgba(255,255,255,0.1); padding: 2em; border-radius: 8px; background: rgba(255,255,255,0.02); text-align: center;">
+            <h3 style="color: #51ff85;">2. Funcionales</h3>
+            <p>Responsabilidades y conocimientos específicos de tu cargo.</p>
+            
+            {% if hecho_fun %}
+                <p style="color: #51ff85; font-weight: bold; margin-bottom: 1em;">✅ Sección Completada</p>
+                <a href="#" class="button disabled fit">Finalizado</a>
+            {% else %}
+                <a href="{% url 'autoevaluacion' trabajador.id_trabajador 'Funcional' %}" class="button primary fit">
+                    Responder Bloque 2
+                </a>
+            {% endif %}
+        </section>
+    </div>
+
+    {% if hecho_org and hecho_fun %}
+    <div style="text-align: center; margin-top: 2em; padding: 2em; background: rgba(81, 255, 133, 0.1); border-radius: 10px;">
+        <h3 style="color: #51ff85; margin: 0;">✅ ¡Has finalizado tu autoevaluación!</h3>
+        <p>Tus respuestas han sido registradas correctamente.</p>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
