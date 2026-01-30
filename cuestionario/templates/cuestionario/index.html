@@ -5,8 +5,8 @@
 {% block content %}
     <section>
         <header>
-            <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }}</h2>
-            <p><strong>{{ trabajador.cargo.nombre_cargo }}</strong> | {{ trabajador.departamento.nombre_departmento }}</p>
+            <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</h2>
+            <p><strong>{{ trabajador.cargo.nombre_cargo }}</strong> {{ trabajador.departamento.nombre_departmento }}</p>
         </header>
     </section>
 

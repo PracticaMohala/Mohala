@@ -3,59 +3,68 @@ from django.utils import timezone
 from .models import Trabajador, TextosEvaluacion, Autoevaluacion, EvaluacionJefatura
 from django.db import transaction
 
+# =========================
+# VISTA INDEX (DASHBOARD)
+# =========================
 def index(request):
     trabajador_id = request.GET.get('id', 1)
     trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
     
-    hecho_org = Autoevaluacion.objects.filter(
+    autoeval_completada = Autoevaluacion.objects.filter(
         trabajador=trabajador, 
-        codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
-    ).exists()
-    hecho_fun = Autoevaluacion.objects.filter(
-        trabajador=trabajador, 
-        codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
+        estado_finalizacion=True
     ).exists()
     
     equipo = trabajador.subordinados.all()
     for sub in equipo:
-        sub_org = EvaluacionJefatura.objects.filter(
+        sub.ya_evaluado = EvaluacionJefatura.objects.filter(
             evaluador=trabajador, 
             trabajador_evaluado=sub,
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
+            estado_finalizacion=True
         ).exists()
-        sub_fun = EvaluacionJefatura.objects.filter(
-            evaluador=trabajador, 
-            trabajador_evaluado=sub,
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
-        ).exists()
-        sub.ya_evaluado = sub_org and sub_fun
 
     context = {
         'trabajador': trabajador,
         'es_jefe': trabajador.subordinados.exists(),
         'equipo': equipo,
-        'ya_hizo_autoevaluacion': hecho_org and hecho_fun,
+        'ya_hizo_autoevaluacion': autoeval_completada,
     }
     return render(request, 'cuestionario/index.html', context)
 
+# =========================
+# LÓGICA AUTOEVALUACIÓN
+# =========================
 def cuestionario_autoevaluacion(request, trabajador_id, dimension=None):
     trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
     
     if not dimension:
-        hecho_org = Autoevaluacion.objects.filter(
-            trabajador=trabajador, 
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
-        ).exists()
-        hecho_fun = Autoevaluacion.objects.filter(
-            trabajador=trabajador, 
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
-        ).exists()
+        respuestas = Autoevaluacion.objects.filter(trabajador=trabajador)
+        ya_finalizado = respuestas.filter(estado_finalizacion=True).exists()
+        
+        total_preguntas = TextosEvaluacion.objects.filter(nivel_jerarquico=trabajador.nivel_jerarquico).count()
+        total_respuestas = respuestas.count()
+        
+        listo_para_enviar = (total_respuestas >= total_preguntas) and not ya_finalizado
+        
+        hecho_org = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional").exists()
+        hecho_fun = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional").exists()
         
         return render(request, 'cuestionario/autoevaluacion_seleccion.html', {
             'trabajador': trabajador,
             'hecho_org': hecho_org,
-            'hecho_fun': hecho_fun
+            'hecho_fun': hecho_fun,
+            'listo_para_enviar': listo_para_enviar,
+            'ya_finalizado': ya_finalizado
         })
+
+    # SEGURIDAD: Si ya existen respuestas para esta dimensión, no permitir entrar al formulario
+    ya_respondido = Autoevaluacion.objects.filter(
+        trabajador=trabajador,
+        codigo_excel__competencia__dimension__nombre_dimension__icontains=dimension
+    ).exists()
+
+    if ya_respondido:
+        return redirect('autoevaluacion_inicio', trabajador_id=trabajador.id_trabajador)
 
     preguntas_qs = TextosEvaluacion.objects.filter(
         nivel_jerarquico=trabajador.nivel_jerarquico,
@@ -67,45 +76,64 @@ def cuestionario_autoevaluacion(request, trabajador_id, dimension=None):
             for pregunta in preguntas_qs:
                 puntaje_valor = request.POST.get(f'puntaje_{pregunta.id_textos_evaluacion}')
                 if puntaje_valor:
-                    Autoevaluacion.objects.create(
-                        puntaje=puntaje_valor,
-                        fecha_evaluacion=timezone.now().date(),
-                        momento_evaluacion=timezone.now(),
+                    Autoevaluacion.objects.update_or_create(
                         trabajador=trabajador,
-                        codigo_excel=pregunta, 
-                        comentario=request.POST.get('comentario', '')
+                        codigo_excel=pregunta,
+                        defaults={
+                            'puntaje': puntaje_valor,
+                            'fecha_evaluacion': timezone.now().date(),
+                            'momento_evaluacion': timezone.now(),
+                            'comentario': request.POST.get('comentario', ''),
+                            'estado_finalizacion': False
+                        }
                     )
         return redirect('autoevaluacion_inicio', trabajador_id=trabajador.id_trabajador)
 
-    context = {
-        'trabajador': trabajador,
-        'preguntas': preguntas_qs,
-        'dimension': dimension,
-    }
+    context = {'trabajador': trabajador, 'preguntas': preguntas_qs, 'dimension': dimension}
     return render(request, 'cuestionario/autoevaluacion.html', context)
 
+def finalizar_autoevaluacion(request, trabajador_id):
+    if request.method == "POST":
+        Autoevaluacion.objects.filter(trabajador_id=trabajador_id).update(estado_finalizacion=True)
+    return redirect('autoevaluacion_inicio', trabajador_id=trabajador_id)
+
+# =========================
+# LÓGICA EVALUACIÓN JEFATURA
+# =========================
 def cuestionario_jefatura(request, evaluador_id, evaluado_id, dimension=None):
     evaluador = get_object_or_404(Trabajador, id_trabajador=evaluador_id)
     evaluado = get_object_or_404(Trabajador, id_trabajador=evaluado_id)
     
     if not dimension:
-        hecho_org = EvaluacionJefatura.objects.filter(
-            evaluador=evaluador, 
-            trabajador_evaluado=evaluado, 
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional"
-        ).exists()
-        hecho_fun = EvaluacionJefatura.objects.filter(
-            evaluador=evaluador, 
-            trabajador_evaluado=evaluado, 
-            codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional"
-        ).exists()
+        respuestas = EvaluacionJefatura.objects.filter(evaluador=evaluador, trabajador_evaluado=evaluado)
+        ya_finalizado = respuestas.filter(estado_finalizacion=True).exists()
+        
+        total_preguntas = TextosEvaluacion.objects.filter(nivel_jerarquico=evaluado.nivel_jerarquico).count()
+        total_respuestas = respuestas.count()
+        
+        listo_para_enviar = (total_respuestas >= total_preguntas) and not ya_finalizado
+        
+        hecho_org = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension__icontains="Organizacional").exists()
+        hecho_fun = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension__icontains="Funcional").exists()
         
         return render(request, 'cuestionario/evaluacion_jefe_seleccion.html', {
             'evaluador': evaluador,
             'evaluado': evaluado,
             'hecho_org': hecho_org,
-            'hecho_fun': hecho_fun
+            'hecho_fun': hecho_fun,
+            'listo_para_enviar': listo_para_enviar,
+            'ya_finalizado': ya_finalizado
         })
+
+    # SEGURIDAD: Si ya existen respuestas para esta dimensión, no permitir entrar al formulario
+    ya_respondido = EvaluacionJefatura.objects.filter(
+        evaluador=evaluador,
+        trabajador_evaluado=evaluado,
+        codigo_excel__competencia__dimension__nombre_dimension__icontains=dimension
+    ).exists()
+
+    if ya_respondido:
+        return redirect('evaluacion_jefe_inicio', evaluador_id=evaluador.id_trabajador, evaluado_id=evaluado.id_trabajador)
 
     preguntas_qs = TextosEvaluacion.objects.filter(
         nivel_jerarquico=evaluado.nivel_jerarquico,
@@ -117,22 +145,65 @@ def cuestionario_jefatura(request, evaluador_id, evaluado_id, dimension=None):
             for pregunta in preguntas_qs:
                 puntaje_valor = request.POST.get(f'puntaje_{pregunta.id_textos_evaluacion}')
                 if puntaje_valor:
-                    EvaluacionJefatura.objects.create(
-                        puntaje=puntaje_valor,
+                    EvaluacionJefatura.objects.update_or_create(
                         evaluador=evaluador,
-                        trabajador_evaluado=evaluado, 
+                        trabajador_evaluado=evaluado,
                         codigo_excel=pregunta,
-                        fecha_evaluacion=timezone.now().date(),
-                        momento_evaluacion=timezone.now(),
-                        comentario=request.POST.get('comentario', '')
+                        defaults={
+                            'puntaje': puntaje_valor,
+                            'fecha_evaluacion': timezone.now().date(),
+                            'momento_evaluacion': timezone.now(),
+                            'comentario': request.POST.get('comentario', ''),
+                            'estado_finalizacion': False
+                        }
                     )
-
         return redirect('evaluacion_jefe_inicio', evaluador_id=evaluador.id_trabajador, evaluado_id=evaluado.id_trabajador)
 
-    context = {
-        'evaluador': evaluador,
-        'evaluado': evaluado,
-        'preguntas': preguntas_qs,
-        'dimension': dimension,
-    }
+    context = {'evaluador': evaluador, 'evaluado': evaluado, 'preguntas': preguntas_qs, 'dimension': dimension}
     return render(request, 'cuestionario/evaluacion_jefe.html', context)
+
+def finalizar_evaluacion_jefe(request, evaluador_id, evaluado_id):
+    if request.method == "POST":
+        EvaluacionJefatura.objects.filter(
+            evaluador_id=evaluador_id, 
+            trabajador_evaluado_id=evaluado_id
+        ).update(estado_finalizacion=True)
+    return redirect('evaluacion_jefe_inicio', evaluador_id=evaluador_id, evaluado_id=evaluado_id)
+
+# =========================
+# VISTA DE RESULTADOS (SOLO LECTURA)
+# =========================
+def ver_resultados(request, trabajador_id, tipo_evaluacion):
+    trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
+    dimension_filtro = request.GET.get('dimension') # Parámetro opcional para filtrar
+
+    if tipo_evaluacion == 'auto':
+        respuestas = Autoevaluacion.objects.filter(trabajador=trabajador)
+        visor_id = trabajador.id_trabajador
+    else:
+        evaluador_id = request.GET.get('evaluador_id')
+        respuestas = EvaluacionJefatura.objects.filter(trabajador_evaluado=trabajador, evaluador_id=evaluador_id)
+        visor_id = evaluador_id
+
+    respuestas = respuestas.select_related('codigo_excel__competencia__dimension')
+
+    # Aplicamos filtro de dimensión si viene en la URL
+    if dimension_filtro:
+        respuestas = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension__icontains=dimension_filtro)
+
+    # Agrupamos por dimensión para el loop del HTML
+    dimensiones_data = {}
+    dimensiones_nombres = respuestas.values_list('codigo_excel__competencia__dimension__nombre_dimension', flat=True).distinct()
+    
+    for dim in dimensiones_nombres:
+        dimensiones_data[dim] = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension=dim)
+
+    context = {
+        'trabajador': trabajador,
+        'dimensiones': dimensiones_data,
+        'comentario_final': respuestas.first().comentario if respuestas.exists() else "",
+        'fecha_cierre': respuestas.first().momento_evaluacion if respuestas.exists() else None,
+        'visor_id': visor_id,
+        'tipo_evaluacion': tipo_evaluacion
+    }
+    return render(request, 'cuestionario/ver_resultados.html', context)
