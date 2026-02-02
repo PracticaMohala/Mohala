@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from .models import Trabajador, TextosEvaluacion, Autoevaluacion, EvaluacionJefatura
+from cuestionario.models import Trabajador, TextosEvaluacion, Autoevaluacion, EvaluacionJefatura
 from django.db import transaction
 
 # =========================
