@@ -265,6 +265,9 @@ class ResultadoConsolidado(models.Model):
         return (
             f"Consolidado {self.periodo} | "
             f"{self.trabajador.nombre} {self.trabajador.apellido_paterno} {self.trabajador.apellido_materno} | "
+            f"Dim: {self.dimension.nombre_dimension if self.dimension else 'N/A'} | "
+            f"Comp: {self.competencia.nombre_competencia if self.competencia else 'N/A'} | "
+            f"{self.codigo_excel} | "
             f"Prom. Dim: {self.prom_dimension} | "
             f"Prom. Comp: {self.prom_competencia} | "
             f"Prom. Gral: {self.prom_general} | "
