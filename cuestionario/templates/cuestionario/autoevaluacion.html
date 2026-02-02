@@ -58,7 +58,12 @@
         {% if preguntas %}
         <div class="row gtr-uniform" style="margin-top: 2em;">
             <div class="col-12">
-                <label for="comentario"><strong>Comentarios adicionales sobre competencias {{ dimension|lower }}s:</strong></label>
+                <label for="comentario">
+                    <strong>
+                        Comentarios adicionales sobre competencias 
+                        {% if dimension == 'Organizacional' %}organizacionales:{% else %}funcionales:{% endif %}
+                    </strong>
+                </label>
                 <textarea name="comentario" id="comentario" rows="4" 
                           placeholder="Escribe aquí cualquier observación sobre tu desempeño en esta dimensión..."
                           style="background: rgba(255,255,255,0.05); color: white;"></textarea>
