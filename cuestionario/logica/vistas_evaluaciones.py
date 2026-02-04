@@ -56,7 +56,8 @@ def cuestionario_autoevaluacion(request, trabajador_id, dimension=None):
                             'fecha_evaluacion': timezone.now().date(),
                             'momento_evaluacion': timezone.now(),
                             'comentario': request.POST.get('comentario', ''),
-                            'estado_finalizacion': False
+                            'estado_finalizacion': False,
+                            'nivel_jerarquico': pregunta.nivel_jerarquico
                         }
                     )
         return redirect('autoevaluacion_inicio', trabajador_id=trabajador.id_trabajador)
@@ -68,7 +69,6 @@ def finalizar_autoevaluacion(request, trabajador_id):
     if request.method == "POST":
         Autoevaluacion.objects.filter(trabajador_id=trabajador_id).update(estado_finalizacion=True)
         
-        # NUEVO: Lógica para Gerente General (Sin jefe)
         trabajador = Trabajador.objects.get(id_trabajador=trabajador_id)
         if trabajador.id_jefe_directo is None:
             generar_consolidado(trabajador)
@@ -140,7 +140,8 @@ def cuestionario_jefatura(request, evaluador_id, evaluado_id, dimension=None):
                             'fecha_evaluacion': timezone.now().date(),
                             'momento_evaluacion': timezone.now(),
                             'comentario': request.POST.get('comentario', ''),
-                            'estado_finalizacion': False
+                            'estado_finalizacion': False,
+                            'nivel_jerarquico': pregunta.nivel_jerarquico
                         }
                     )
         return redirect('evaluacion_jefe_inicio', evaluador_id=evaluador.id_trabajador, evaluado_id=evaluado.id_trabajador)
