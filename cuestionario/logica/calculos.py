@@ -1,6 +1,6 @@
 from django.db.models import Avg
 from datetime import datetime
-from ..models import Autoevaluacion, EvaluacionJefatura, ResultadoConsolidado, Trabajador
+from cuestionario.models import Autoevaluacion, EvaluacionJefatura, ResultadoConsolidado, Trabajador
 
 def generar_consolidado(trabajador, periodo=None):
     if not periodo:

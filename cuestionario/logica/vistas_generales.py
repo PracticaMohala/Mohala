@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404
-from ..models import Trabajador, Autoevaluacion, EvaluacionJefatura
+from django.contrib.auth.decorators import login_required
+from cuestionario.models import Trabajador, Autoevaluacion, EvaluacionJefatura
 
 # =========================
 # VISTA INDEX (DASHBOARD)
 # =========================
+@login_required
 def index(request):
-    trabajador_id = request.GET.get('id', 1)
-    trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
+    trabajador = get_object_or_404(Trabajador, user=request.user)
     
     # Verifica si el usuario actual terminó su propia autoevaluación
     autoeval_completada = Autoevaluacion.objects.filter(
@@ -16,15 +17,13 @@ def index(request):
     
     equipo = trabajador.subordinados.all()
     
-    # BUCLE DE PREPARACIÓN DE EQUIPO
+    # BUCLE DE PREPARACIÓN DE EQUIPO 
     for sub in equipo:
-        # Esto permite que el botón de jefatura se habilite/deshabilite en el HTML
         sub.autoevaluacion_terminada = Autoevaluacion.objects.filter(
             trabajador=sub, 
             estado_finalizacion=True
         ).exists()
         
-        # Verifica si el jefe ya cerró la evaluación de este subordinado
         sub.ya_evaluado = EvaluacionJefatura.objects.filter(
             evaluador=trabajador, 
             trabajador_evaluado=sub,
@@ -42,16 +41,20 @@ def index(request):
 # =========================
 # VISTA DE RESULTADOS
 # =========================
+@login_required # <--- También protegemos los resultados
 def ver_resultados(request, trabajador_id, tipo_evaluacion):
-    trabajador = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
+    # Aquí puedes validar que el que mira los resultados sea el mismo trabajador o su jefe
+    trabajador_autenticado = get_object_or_404(Trabajador, user=request.user)
+    trabajador_a_ver = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
+    
     dimension_filtro = request.GET.get('dimension')
 
     if tipo_evaluacion == 'auto':
-        respuestas = Autoevaluacion.objects.filter(trabajador=trabajador)
-        visor_id = trabajador.id_trabajador
+        respuestas = Autoevaluacion.objects.filter(trabajador=trabajador_a_ver)
+        visor_id = trabajador_a_ver.id_trabajador
     else:
         evaluador_id = request.GET.get('evaluador_id')
-        respuestas = EvaluacionJefatura.objects.filter(trabajador_evaluado=trabajador, evaluador_id=evaluador_id)
+        respuestas = EvaluacionJefatura.objects.filter(trabajador_evaluado=trabajador_a_ver, evaluador_id=evaluador_id)
         visor_id = evaluador_id
 
     respuestas = respuestas.select_related('codigo_excel__competencia__dimension')
@@ -66,7 +69,7 @@ def ver_resultados(request, trabajador_id, tipo_evaluacion):
         dimensiones_data[dim] = respuestas.filter(codigo_excel__competencia__dimension__nombre_dimension=dim)
 
     context = {
-        'trabajador': trabajador,
+        'trabajador': trabajador_a_ver,
         'dimensiones': dimensiones_data,
         'comentario_final': respuestas.first().comentario if respuestas.exists() else "",
         'fecha_cierre': respuestas.first().momento_evaluacion if respuestas.exists() else None,

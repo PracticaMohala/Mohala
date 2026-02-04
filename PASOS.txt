@@ -1,0 +1,13 @@
+PASO 1: Antes de iniciar MySql ingresa chcp 65001
+PASO 2: & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u root -p
+PASO 3: DROP DATABASE sistema_mohala;
+PASO 4: CREATE DATABASE sistema_mohala CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+PASO 5: GRANT ALL PRIVILEGES ON sistema_mohala.* TO 'mohala'@'localhost';
+PASO 6: FLUSH PRIVILEGES;
+PASO 7: & "C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe" -u mohala -p
+PASO 8: USE sistema_mohala; SET NAMES 'utf8mb4'; 
+PASO 9: source C:/Users/gusta/Desktop/Sistema_Mohala/creacion_tablas.sql;
+PASO 10: source C:/Users/gusta/Desktop/Sistema_Mohala/poblacion_tablas.sql;
+PASO 11: python manage.py makemigrations
+PASO 12: python manage.py migrate
+PASO 13: python manage.py createsuperuser

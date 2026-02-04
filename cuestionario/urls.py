@@ -1,7 +1,11 @@
 from django.urls import path
 from . import logica as views
+from .logica import validador_login
 
 urlpatterns = [
+    path('login/', validador_login.login_view, name='login'),
+    path('logout/', validador_login.logout_view, name='logout'),
+
     path('', views.index, name='index'),
     
     path('autoevaluacion/<int:trabajador_id>/', 

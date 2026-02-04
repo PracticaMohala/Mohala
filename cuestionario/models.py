@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save 
+from django.dispatch import receiver 
 
 # =========================
 # Tabla Dimension
@@ -96,6 +99,15 @@ class Trabajador(models.Model):
         db_column='departamento_id_departamento'
     )
 
+    # Vínculo con el usuario de sistema para el Login
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        db_column='user_id' 
+    )
+
     class Meta:
         managed = False
         db_table = 'trabajador'
@@ -105,7 +117,7 @@ class Trabajador(models.Model):
         return self.subordinados.exists()
 
     def __str__(self):
-        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} | {self.rut}"
+        return f"{self.nombre} {self.apellido_paterno} {self.apellido_materno} | {self.rut} | {self.email}"
 
 # =========================
 # Tabla Competencia
@@ -264,7 +276,6 @@ class ResultadoConsolidado(models.Model):
         db_column='nivel_jerarquico_id_nivel_jerarquico'
     )
     
-    # Control Temporal
     periodo = models.IntegerField()
     fecha_consolidacion = models.DateTimeField(auto_now_add=True)
 
@@ -274,11 +285,24 @@ class ResultadoConsolidado(models.Model):
         unique_together = (('trabajador', 'codigo_excel', 'periodo'),)
 
     def __str__(self):
-        return (
-            f"Consolidado {self.periodo} | "
-            f"{self.trabajador.nombre} {self.trabajador.apellido_paterno} {self.trabajador.apellido_materno} | "
-            f"Dim: {self.dimension.nombre_dimension if self.dimension else 'N/A'} | "
-            f"Comp: {self.competencia.nombre_competencia if self.competencia else 'N/A'} | "
-            f"{self.codigo_excel} | "
-            f"Dif: {self.diferencia}"
+        return f"Consolidado {self.periodo} | {self.trabajador.nombre} {self.trabajador.apellido_paterno} | Dif: {self.diferencia}"
+
+# ==========================================================
+# SIGNALS: Automatización de creación de usuarios para Login
+# ==========================================================
+@receiver(post_save, sender=Trabajador)
+def crear_usuario_automatico(sender, instance, created, **kwargs):
+    """
+    Cada vez que se crea un Trabajador, se le crea un User de Django
+    con username = email y password = Mohala2026.
+    """
+    if created and not instance.user:
+        # Creamos el objeto User en auth_user
+        nuevo_user = User.objects.create_user(
+            username=instance.email,
+            email=instance.email,
+            password='Mohala2026'
         )
+        # Vinculamos y guardamos el campo user_id en TRABAJADOR
+        instance.user = nuevo_user
+        instance.save()
