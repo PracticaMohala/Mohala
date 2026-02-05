@@ -31,6 +31,7 @@ class TextosEvaluacionAdmin(admin.ModelAdmin):
     list_display = ('codigo_excel', 'competencia', 'nivel_jerarquico', 'get_texto_corto')
     list_filter = ('nivel_jerarquico', 'competencia__dimension', 'competencia')
     search_fields = ('codigo_excel', 'texto')
+    ordering = ('id_textos_evaluacion',)
 
     @admin.display(description='Pregunta')
     def get_texto_corto(self, obj):
@@ -38,20 +39,48 @@ class TextosEvaluacionAdmin(admin.ModelAdmin):
 
 @admin.register(Autoevaluacion)
 class AutoevaluacionAdmin(admin.ModelAdmin):
-    list_display = ('trabajador', 'codigo_excel', 'puntaje', 'estado_finalizacion', 'fecha_evaluacion')
+    list_display = ('trabajador', 'get_nivel_jerarquico', 'codigo_excel', 'get_competencia', 'puntaje', 'estado_finalizacion', 'fecha_evaluacion')
     list_filter = ('estado_finalizacion', 'fecha_evaluacion', 'nivel_jerarquico')
     search_fields = ('trabajador__nombre', 'trabajador__apellido_paterno', 'codigo_excel__codigo_excel')
+    ordering = ('codigo_excel__id_textos_evaluacion',)
 
+    @admin.display(description='Nivel Jerárquico', ordering='nivel_jerarquico')
+    def get_nivel_jerarquico(self, obj):
+        return obj.nivel_jerarquico
+
+    @admin.display(description='Competencia')
+    def get_competencia(self, obj):
+        return obj.codigo_excel.competencia if obj.codigo_excel else "-"
+    
 @admin.register(EvaluacionJefatura)
 class EvaluacionJefaturaAdmin(admin.ModelAdmin):
-    list_display = ('evaluador', 'trabajador_evaluado', 'codigo_excel', 'puntaje', 'estado_finalizacion')
+    list_display = ('evaluador', 'trabajador_evaluado', 'get_nivel_jerarquico', 'codigo_excel', 'get_competencia', 'puntaje', 'estado_finalizacion')
     list_filter = ('estado_finalizacion', 'evaluador', 'trabajador_evaluado')
+    search_fields = ('trabajador__nombre', 'trabajador__apellido_paterno', 'codigo_excel__codigo_excel')
+    ordering = ('codigo_excel__id_textos_evaluacion',)
+
+    @admin.display(description='Nivel Jerárquico', ordering='nivel_jerarquico')
+    def get_nivel_jerarquico(self, obj):
+        return obj.nivel_jerarquico
+
+    @admin.display(description='Competencia')
+    def get_competencia(self, obj):
+        return obj.codigo_excel.competencia if obj.codigo_excel else "-"
 
 @admin.register(ResultadoConsolidado)
 class ResultadoConsolidadoAdmin(admin.ModelAdmin):
-    list_display = ('trabajador', 'codigo_excel', 'puntaje_autoev', 'puntaje_jefe', 'diferencia', 'periodo')
+    list_display = ('trabajador', 'get_nivel_jerarquico', 'codigo_excel', 'get_competencia', 'puntaje_autoev', 'puntaje_jefe', 'diferencia', 'periodo')
     list_filter = ('periodo', 'trabajador')
     readonly_fields = ('diferencia',)
+    ordering = ('codigo_excel__id_textos_evaluacion',)
+
+    @admin.display(description='Nivel Jerárquico', ordering='nivel_jerarquico')
+    def get_nivel_jerarquico(self, obj):
+        return obj.nivel_jerarquico
+
+    @admin.display(description='Competencia')
+    def get_competencia(self, obj):
+        return obj.codigo_excel.competencia if obj.codigo_excel else "-"
 
 # Registros simples
 admin.site.register(Dimension)
