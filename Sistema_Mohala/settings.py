@@ -5,13 +5,13 @@ from pathlib import Path
 # Carpeta base del proyecto
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# La clave secreta se leerá desde Railway, si no existe usa la de desarrollo
+# La clave secreta se leerá desde Railway
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-yw8ipn#h#l*3rau(91-_*@hou*2ra=wkota3mriwczp8pupd=i')
 
-# En la nube, DEBUG siempre será False a menos que lo actives en Railway
+# DEBUG: En Railway será False (seguridad), en tu PC será True si creas la variable
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Permitir que el dominio de Railway funcione
+# Permitir que el dominio de Railway y localhost funcionen
 ALLOWED_HOSTS = ['*']
 
 # Aplicaciones instaladas
@@ -22,12 +22,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cuestionario',
+    'cuestionario',  # Tu app
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', # Vital para archivos estáticos
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -41,10 +41,11 @@ ROOT_URLCONF = 'Sistema_Mohala.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -55,6 +56,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
+# BASE DE DATOS: Configuración automática para Railway
 DATABASES = {
     'default': dj_database_url.config(conn_max_age=600)
 }
@@ -69,16 +71,27 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Configuración de idioma y hora
 LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Santiago' # Ajustado a tu zona horaria
 USE_I18N = True
 USE_TZ = True
 
-# ARCHIVOS ESTÁTICOS (Importante para que se vea el diseño)
-STATIC_URL = 'static/'
+# --- ARCHIVOS ESTÁTICOS (CSS, JS, IMÁGENES) ---
+STATIC_URL = '/static/'
+
+# DIRS le dice a Django dónde buscar los CSS que tú escribiste
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# ROOT es donde WhiteNoise guardará todo para producción
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Almacenamiento optimizado para Railway
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Tipo de campo por defecto
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'index'
+LOGOUT_REDIRECT_URL = 'login'

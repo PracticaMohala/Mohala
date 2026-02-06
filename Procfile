@@ -1,1 +1,1 @@
-web: gunicorn Sistema_Mohala.wsgi
+web: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Sistema_Mohala.wsgi
