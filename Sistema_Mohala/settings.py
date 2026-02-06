@@ -55,11 +55,15 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
-# BASE DE DATOS: 100% Nube
-# Railway inyecta automáticamente la variable DATABASE_URL
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
+    'default': dj_database_url.config(
+        conn_max_age=600,
+        engine='django.db.backends.mysql' 
+    )
 }
+
+# Esto engaña a Django para que use mysql-connector en lugar de mysqlclient
+import mysql.connector.django
 
 # Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
