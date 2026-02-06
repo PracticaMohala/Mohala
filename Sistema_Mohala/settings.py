@@ -8,11 +8,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # La clave secreta se leerá desde Railway
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-yw8ipn#h#l*3rau(91-_*@hou*2ra=wkota3mriwczp8pupd=i')
 
-# DEBUG: En Railway será False (seguridad), en tu PC será True si creas la variable
+# DEBUG: En Railway será False, en tu PC será True si creas la variable
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Permitir que el dominio de Railway y localhost funcionen
 ALLOWED_HOSTS = ['*']
+
+# --- CONFIGURACIÓN DE SEGURIDAD PARA RAILWAY ---
+# Esto soluciona el error 403 que te daba al entrar al admin
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.up.railway.app',
+    'https://mohala-production.up.railway.app' # Cambia esto por tu URL real de Railway si es distinta
+]
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
@@ -58,7 +65,7 @@ WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
 # BASE DE DATOS: Configuración automática para Railway
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 # Validación de contraseñas
@@ -71,22 +78,23 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Configuración de idioma y hora
 LANGUAGE_CODE = 'es-es'
-TIME_ZONE = 'America/Santiago' # Ajustado a tu zona horaria
+TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
 # --- ARCHIVOS ESTÁTICOS (CSS, JS, IMÁGENES) ---
 STATIC_URL = '/static/'
 
-# DIRS le dice a Django dónde buscar los CSS que tú escribiste
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# Esto evita el warning si la carpeta no existe aún
+STATICFILES_DIRS = []
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
+if os.path.exists(STATIC_DIR):
+    STATICFILES_DIRS.append(STATIC_DIR)
 
 # ROOT es donde WhiteNoise guardará todo para producción
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-# Almacenamiento optimizado para Railway
+# Almacenamiento optimizado para Railway (WhiteNoise)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Tipo de campo por defecto
