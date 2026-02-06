@@ -65,7 +65,7 @@ WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
 # BASE DE DATOS: Configuración automática para Railway
 DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
+    'default': dj_database_url.config(conn_max_age=600)
 }
 
 # Validación de contraseñas
