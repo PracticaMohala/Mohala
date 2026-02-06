@@ -12,7 +12,7 @@ class Dimension(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'dimension'
+        db_table = 'DIMENSION'
 
     def __str__(self):
         return self.nombre_dimension
@@ -26,7 +26,7 @@ class Departamento(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'departamento'
+        db_table = 'DEPARTAMENTO'
 
     def __str__(self):
         return self.nombre_departamento
@@ -40,7 +40,7 @@ class NivelJerarquico(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'nivel_jerarquico'
+        db_table = 'NIVEL_JERARQUICO'
 
     def __str__(self):
         return self.nombre_nivel_jerarquico
@@ -59,7 +59,7 @@ class Cargo(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'cargo'
+        db_table = 'CARGO'
 
     def __str__(self):
         return self.nombre_cargo
@@ -110,7 +110,7 @@ class Trabajador(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'trabajador'
+        db_table = 'TRABAJADOR'
 
     @property
     def es_jefe(self):
@@ -133,7 +133,7 @@ class Competencia(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'competencia'
+        db_table = 'COMPETENCIA'
 
     def __str__(self):
         return self.nombre_competencia
@@ -158,7 +158,7 @@ class TextosEvaluacion(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'textos_evaluacion'
+        db_table = 'TEXTOS_EVALUACION'
 
     def __str__(self):
         return f"[{self.codigo_excel}]"
@@ -192,7 +192,7 @@ class Autoevaluacion(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'autoevaluacion'
+        db_table = 'AUTOEVALUACION'
         unique_together = (('trabajador', 'codigo_excel'),)
 
     def __str__(self):
@@ -234,7 +234,7 @@ class EvaluacionJefatura(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'evaluacion_jefatura'
+        db_table = 'EVALUACION_JEFATURA'
         unique_together = (('evaluador', 'trabajador_evaluado', 'codigo_excel'),)
     
     def __str__(self):
@@ -281,7 +281,7 @@ class ResultadoConsolidado(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'resultado_consolidado'
+        db_table = 'RESULTADO_CONSOLIDADO'
         unique_together = (('trabajador', 'codigo_excel', 'periodo'),)
 
     def __str__(self):

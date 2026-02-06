@@ -1,7 +1,7 @@
 -- =========================
 -- Poblamiento de tabla Dimension
 -- =========================
-INSERT INTO dimension (id_dimension, nombre_dimension)
+INSERT INTO DIMENSION (id_dimension, nombre_dimension)
 VALUES 
 (1, 'Organizacionales'),
 (2, 'Funcionales');
@@ -9,7 +9,7 @@ VALUES
 -- =========================
 -- Poblamiento de tabla Departamento
 -- =========================
-INSERT INTO departamento (id_departamento, nombre_departamento)
+INSERT INTO DEPARTAMENTO (id_departamento, nombre_departamento)
 VALUES 
 (1, 'Gerencia General'),
 (2, 'Recursos Humanos'),
@@ -25,7 +25,7 @@ VALUES
 -- =========================
 -- Poblamiento de tabla Nivel Jerárquico
 -- =========================
-INSERT INTO nivel_jerarquico (id_nivel_jerarquico, nombre_nivel_jerarquico)
+INSERT INTO NIVEL_JERARQUICO (id_nivel_jerarquico, nombre_nivel_jerarquico)
 VALUES 
 (1, 'Operativo'),
 (2, 'Táctico'),
@@ -36,7 +36,7 @@ VALUES
 -- =========================
 
 -- Cargos Operativos (Nivel 1)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
+INSERT INTO CARGO (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (1, 'Analista', 1),
 (2, 'Técnico en Informática', 1),
 (3, 'Asistente Administrativo', 1),
@@ -54,7 +54,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico)
 (15, 'Digitador', 1);
 
 -- Cargos Tácticos (Nivel 2)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
+INSERT INTO CARGO (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (16, 'Supervisor de Ventas', 2),
 (17, 'Jefe de Área', 2),
 (18, 'Coordinador de Proyectos', 2),
@@ -72,7 +72,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico)
 (30, 'Coordinador Académico', 2);
 
 -- Cargos Estratégicos (Nivel 3)
-INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
+INSERT INTO CARGO (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico) VALUES
 (31, 'Gerente General', 3),
 (32, 'Director de Operaciones', 3),
 (33, 'Director Médico', 3),
@@ -94,7 +94,7 @@ INSERT INTO cargo (id_cargo, nombre_cargo, nivel_jerarquico_id_nivel_jerarquico)
 -- =========================
 
 -- Competencias Organizacionales (Dimension 1)
-INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
+INSERT INTO COMPETENCIA (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
 (1, 'Creatividad e Innovación', 1),
 (2, 'Enfoque de Negocio', 1),
 (3, 'Identificación Cultural', 1),
@@ -102,7 +102,7 @@ INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimens
 (5, 'Visión Global y Sistemática', 1);
 
 -- Competencias Funcionales (Dimension 2)
-INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
+INSERT INTO COMPETENCIA (id_competencia, nombre_competencia, dimension_id_dimension) VALUES
 (6, 'Análisis y Solución de Problemas', 2),
 (7, 'Aprendizaje e Innovación', 2),
 (8, 'Comunicación', 2),
@@ -119,12 +119,12 @@ INSERT INTO competencia (id_competencia, nombre_competencia, dimension_id_dimens
 -- =========================
 
 -- NIVEL 1: GERENCIA GENERAL (El tope de la pirámide)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (1, '10.234.567-1', NULL, 'Roberto', 'Méndez', 'Castro', 'r.mendez@mohala.cl', 'Masculino', 3, 31, 1);
 
 -- NIVEL 2: JEFATURAS (Reportan al ID 1)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (2, '12.456.789-2', 1, 'Patricia', 'Lorca', 'Vial', 'p.lorca@mohala.cl', 'Femenino', 2, 20, 2),    -- Jefe RRHH
 (3, '11.345.678-3', 1, 'Andrés', 'Tapia', 'Ruiz', 'a.tapia@mohala.cl', 'Masculino', 2, 29, 3),   -- Jefe TI
@@ -134,26 +134,26 @@ VALUES
 -- NIVEL 3: ANALISTAS Y OPERATIVOS (Reportan a sus respectivos jefes)
 
 -- Reportan a TI (Jefe ID: 3)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (6, '15.123.456-6', 3, 'Cristián', 'Fuentes', 'Díaz', 'c.fuentes@mohala.cl', 'Masculino', 1, 1, 3), -- Analista Programador
 (7, '16.234.567-7', 3, 'Loreto', 'Urrutia', 'Mesa', 'l.urrutia@mohala.cl', 'Femenino', 1, 2, 3),    -- Analista QA
 (8, '17.345.678-8', 3, 'Felipe', 'Rivas', 'González', 'f.rivas@mohala.cl', 'Masculino', 1, 3, 3); -- Soporte Técnico
 
 -- Reportan a RRHH (Jefe ID: 2)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (9, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@mohala.cl', 'Femenino', 1, 8, 2),   -- Analista Selección
 (10, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@mohala.cl', 'Masculino', 1, 10, 2); -- Administrativo RRHH
 
 -- Reportan a Ventas (Jefa ID: 4)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (11, '20.678.901-1', 4, 'Claudia', 'Núñez', 'Vera', 'c.nunez@mohala.cl', 'Femenino', 1, 11, 5),   -- Ejecutivo Ventas
 (12, '21.789.012-2', 4, 'Jorge', 'Guerra', 'Silva', 'j.guerra@mohala.cl', 'Masculino', 1, 11, 5); -- Ejecutivo Ventas
 
 -- Reportan a Contabilidad (Jefe ID: 5)
-INSERT INTO trabajador (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
+INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
 (13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@mohala.cl', 'Femenino', 1, 14, 6),
 (14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@mohala.cl', 'Masculino', 1, 14, 6),
@@ -166,7 +166,7 @@ VALUES
 
 -- 1. CREATIVIDAD E INNOVACIÓN (ID_COMPETENCIA: 1)
 -- Operativo (Nivel 1), Táctico (Nivel 2), Estratégico (Nivel 3)
-INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+INSERT INTO TEXTOS_EVALUACION (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
 (1, 'CIO1.1', 'Trabaja con mecanismos conocidos y rutinarios.', 1, 1),
 (2, 'CIO1.2', 'Se mueve con facilidad en situaciones conocidas con pautas de acción prefijadas.', 1, 1),
 (3, 'CIO1.3', 'Implementa ideas y soluciones que le permiten resolver situaciones rutinarias y complejas.', 1, 1),
@@ -178,7 +178,7 @@ INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, compet
 (9, 'CIE1.3', 'Plantea mejoras o soluciones nuevas a problemas sencillos y complejos.', 1, 3);
 
 -- 2. ENFOQUE DE NEGOCIO (ID_COMPETENCIA: 2)
-INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+INSERT INTO TEXTOS_EVALUACION (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
 (10, 'ENO2.1', 'Comprende las peculiaridades de los servicios.', 2, 1),
 (11, 'ENO2.2', 'Conoce las estrategias, principios y valores corporativos.', 2, 1),
 (12, 'ENO2.3', 'Invierte tiempo adicional para identificar oportunidades de crecimiento.', 2, 1),
@@ -190,7 +190,7 @@ INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, compet
 (18, 'ENE2.3', 'Reconocido por su expertise, alto conocimiento cultural y estrategias.', 2, 3);
 
 -- 6. ANÁLISIS Y SOLUCIÓN DE PROBLEMAS (ID_COMPETENCIA: 6) 
-INSERT INTO textos_evaluacion (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
+INSERT INTO TEXTOS_EVALUACION (id_textos_evaluacion, codigo_excel, texto, competencia_id_competencia, nivel_jerarquico_id_nivel_jerarquico) VALUES 
 (19, 'ASO1.1', 'Resuelve problemas rutinarios de forma efectiva.', 6, 1),
 (20, 'ASO1.2', 'Acude a sus superiores o pares para crear alternativas.', 6, 1),
 (21, 'ASO1.3', 'Logra detectar las variables que influyen en el problema de forma oportuna.', 6, 1),
