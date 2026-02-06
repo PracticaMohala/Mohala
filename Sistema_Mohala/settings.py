@@ -56,14 +56,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        conn_max_age=600,
-        engine='django.db.backends.mysql' 
-    )
+    'default': dj_database_url.config(conn_max_age=600)
 }
-
-# Esto engaña a Django para que use mysql-connector en lugar de mysqlclient
-import mysql.connector.django
 
 # Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
