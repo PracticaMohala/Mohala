@@ -8,7 +8,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Iniciando vinculación de usuarios...')
         
-        # El código que te funcionó:
+        # Filtramos trabajadores sin usuario vinculado
         trabajadores_sin_user = Trabajador.objects.filter(user__isnull=True)
         
         contador = 0
@@ -21,14 +21,12 @@ class Command(BaseCommand):
             
             # 2. Le asignamos la contraseña correctamente (hasheada)
             user.set_password('Mohala2026')
-            user.is_staff = True  
             user.save()
             
             # 3. Vinculamos el usuario al trabajador
             t.user = user
             t.save()
             
-            # Usamos self.stdout.write en lugar de print para comandos de Django
             self.stdout.write(self.style.SUCCESS(f"✅ Usuario creado para: {t.email}"))
             contador += 1
 
