@@ -1,27 +1,23 @@
 import os
-import dj_database_url
 from pathlib import Path
+import dj_database_url
 
-# Carpeta base del proyecto
+# Rutas base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# La clave secreta se leerá desde Railway
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-yw8ipn#h#l*3rau(91-_*@hou*2ra=wkota3mriwczp8pupd=i')
+# SECRET_KEY y DEBUG
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-yw8ipn#h#l*3rau(91-_*@hou*2ra=wkota3mriwczp8pupd=i')
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-# DEBUG: En Railway será False, en tu PC será True si creas la variable
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+# Dominios permitidos (Adaptado a Mohala)
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,mohala-production.up.railway.app').split(',')
 
-# Permitir que el dominio de Railway y localhost funcionen
-ALLOWED_HOSTS = ['*']
-
-# --- CONFIGURACIÓN DE SEGURIDAD PARA RAILWAY ---
-# Esto soluciona el error 403 que te daba al entrar al admin
+# Confianza explícita para CSRF
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.up.railway.app',
-    'https://mohala-production.up.railway.app' # Cambia esto por tu URL real de Railway si es distinta
+    'https://mohala-production.up.railway.app'
 ]
 
-# Aplicaciones instaladas
+# Aplicaciones (Tu app es cuestionario)
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -29,12 +25,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'cuestionario',  # Tu app
+    'cuestionario',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -48,7 +44,7 @@ ROOT_URLCONF = 'Sistema_Mohala.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,41 +59,42 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'Sistema_Mohala.wsgi.application'
 
-# BASE DE DATOS: Configuración automática para Railway
-DATABASES = {
-    'default': dj_database_url.config(conn_max_age=600)
-}
+# --- 🗄️ BASE DE DATOS (Lógica de tu proyecto anterior) ---
+MYSQL_URL = os.environ.get('MYSQL_URL') or os.environ.get('DATABASE_URL')
 
-# Validación de contraseñas
-AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
-]
+if MYSQL_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(
+            MYSQL_URL,
+            conn_max_age=600,
+            ssl_require=False
+        )
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
-# Configuración de idioma y hora
-LANGUAGE_CODE = 'es-es'
+# Idioma y hora (Tu ajuste a Santiago)
+LANGUAGE_CODE = 'es-cl'
 TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
-# --- ARCHIVOS ESTÁTICOS (CSS, JS, IMÁGENES) ---
+# Archivos estáticos
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
 
-# Esto evita el warning si la carpeta no existe aún
-STATICFILES_DIRS = []
-STATIC_DIR = os.path.join(BASE_DIR, 'static')
-if os.path.exists(STATIC_DIR):
-    STATICFILES_DIRS.append(STATIC_DIR)
-
-# ROOT es donde WhiteNoise guardará todo para producción
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# Almacenamiento optimizado para Railway (WhiteNoise)
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Tipo de campo por defecto
+# Seguridad adicional de tu proyecto anterior
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'login'
