@@ -118,47 +118,25 @@ INSERT INTO COMPETENCIA (id_competencia, nombre_competencia, dimension_id_dimens
 -- Poblamiento de tabla Trabajador
 -- =========================
 
--- NIVEL 1: GERENCIA GENERAL (El tope de la pirámide)
+-- NIVEL 1: GERENCIA GENERAL
 INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
-(1, '10.234.567-1', NULL, 'Roberto', 'Méndez', 'Castro', 'r.mendez@mohala.cl', 'Masculino', 3, 31, 1);
-(2, '12.456.789-2', NULL, 'Patricia', 'Lorca', 'Vial', 'p.lorca@mohala.cl', 'Femenino', 3, 20, 2),    -- Jefe RRHH
-
+(1, '10.234.567-1', NULL, 'Roberto', 'Méndez', 'Castro', 'r.mendez@mohala.cl', 'Masculino', 3, 31, 1),
+(2, '12.456.789-2', NULL, 'Patricia', 'Lorca', 'Vial', 'p.lorca@mohala.cl', 'Femenino', 3, 20, 2);
 
 -- NIVEL 2: JEFATURAS (Reportan al ID 1)
 INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
-(3, '11.345.678-3', 1, 'Andrés', 'Tapia', 'Ruiz', 'a.tapia@mohala.cl', 'Masculino', 2, 29, 3),   -- Jefe TI
-(4, '13.567.890-4', 1, 'Mónica', 'Sánchez', 'Paz', 'm.sanchez@mohala.cl', 'Femenino', 2, 22, 5), -- Subgerente Ventas
---(5, '10.987.654-5', 1, 'Ricardo', 'Peña', 'Luz', 'r.pena@mohala.cl', 'Masculino', 2, 25, 6);    -- Jefe Contabilidad
+(3, '11.345.678-3', 1, 'Andrés', 'Tapia', 'Ruiz', 'a.tapia@mohala.cl', 'Masculino', 2, 29, 3),
+(4, '13.567.890-4', 1, 'Mónica', 'Sánchez', 'Paz', 'm.sanchez@mohala.cl', 'Femenino', 2, 22, 5);
 
--- NIVEL 3: ANALISTAS Y OPERATIVOS (Reportan a sus respectivos jefes)
-
--- Reportan a TI (Jefe ID: 3)
-INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
-VALUES 
---(6, '15.123.456-6', 3, 'Cristián', 'Fuentes', 'Díaz', 'c.fuentes@mohala.cl', 'Masculino', 1, 1, 3), -- Analista Programador
---(7, '16.234.567-7', 3, 'Loreto', 'Urrutia', 'Mesa', 'l.urrutia@mohala.cl', 'Femenino', 1, 2, 3),    -- Analista QA
---(8, '17.345.678-8', 3, 'Felipe', 'Rivas', 'González', 'f.rivas@mohala.cl', 'Masculino', 1, 3, 3); -- Soporte Técnico
+-- NIVEL 3: ANALISTAS Y OPERATIVOS
 
 -- Reportan a RRHH (Jefe ID: 2)
 INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
-(9, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@mohala.cl', 'Femenino', 1, 8, 2),   -- Analista Selección
-(10, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@mohala.cl', 'Masculino', 1, 10, 2); -- Administrativo RRHH
-
--- Reportan a Ventas (Jefa ID: 4)
-INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
-VALUES
---(11, '20.678.901-1', 4, 'Claudia', 'Núñez', 'Vera', 'c.nunez@mohala.cl', 'Femenino', 1, 11, 5),   -- Ejecutivo Ventas
---(12, '21.789.012-2', 4, 'Jorge', 'Guerra', 'Silva', 'j.guerra@mohala.cl', 'Masculino', 1, 11, 5); -- Ejecutivo Ventas
-
--- Reportan a Contabilidad (Jefe ID: 5)
-INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
-VALUES 
---(13, '22.890.123-3', 5, 'Beatriz', 'Araya', 'Toro', 'b.araya@mohala.cl', 'Femenino', 1, 14, 6),
---(14, '23.901.234-4', 5, 'Mauricio', 'Leiva', 'Paz', 'm.leiva@mohala.cl', 'Masculino', 1, 14, 6),
---(15, '19.123.456-K', 5, 'Andrea', 'Romero', 'Sanchez', 'a.romero@mohala.cl', 'Femenino', 1, 4, 6);
+(9, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@mohala.cl', 'Femenino', 1, 8, 2),
+(10, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@mohala.cl', 'Masculino', 1, 10, 2);
 
 
 -- =========================
