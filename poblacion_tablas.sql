@@ -135,8 +135,8 @@ VALUES
 -- Reportan a RRHH (Jefe ID: 2)
 INSERT INTO TRABAJADOR (id_trabajador, rut, id_jefe_directo, nombre, apellido_paterno, apellido_materno, email, genero, nivel_jerarquico_id_nivel_jerarquico, cargo_id_cargo, departamento_id_departamento)
 VALUES 
-(9, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@mohala.cl', 'Femenino', 1, 8, 2),
-(10, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@mohala.cl', 'Masculino', 1, 10, 2);
+(5, '18.456.789-9', 2, 'Valeria', 'Cáceres', 'Pinto', 'v.caceres@mohala.cl', 'Femenino', 1, 8, 2),
+(6, '19.567.890-0', 2, 'Sebastián', 'Marín', 'Rojas', 's.marin@mohala.cl', 'Masculino', 1, 10, 2);
 
 
 -- =========================
