@@ -2,14 +2,23 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from cuestionario.models import Trabajador, Autoevaluacion, EvaluacionJefatura
 
-# =========================
-# VISTA INDEX (DASHBOARD)
-# =========================
 @login_required
 def index(request):
+    # 1. VALIDACIÓN PARA ADMINISTRADOR
+    if request.user.is_superuser:
+        context = {
+            'es_admin_sistema': True,
+            'nombre_usuario': request.user.username,
+            'trabajador': None, # Evitamos confusiones
+            'es_jefe': False,
+            'equipo': [],
+            'ya_hizo_autoevaluacion': False,
+        }
+        return render(request, 'cuestionario/index.html', context)
+
+    # 2. FLUJO NORMAL PARA TRABAJADORES
     trabajador = get_object_or_404(Trabajador, user=request.user)
     
-    # Verifica si el usuario actual terminó su propia autoevaluación
     autoeval_completada = Autoevaluacion.objects.filter(
         trabajador=trabajador, 
         estado_finalizacion=True
@@ -17,7 +26,6 @@ def index(request):
     
     equipo = trabajador.subordinados.all()
     
-    # BUCLE DE PREPARACIÓN DE EQUIPO 
     for sub in equipo:
         sub.autoevaluacion_terminada = Autoevaluacion.objects.filter(
             trabajador=sub, 
@@ -35,15 +43,13 @@ def index(request):
         'es_jefe': trabajador.subordinados.exists(),
         'equipo': equipo,
         'ya_hizo_autoevaluacion': autoeval_completada,
+        'es_admin_sistema': False,
     }
     return render(request, 'cuestionario/index.html', context)
 
-# =========================
-# VISTA DE RESULTADOS
-# =========================
-@login_required # <--- También protegemos los resultados
+@login_required
 def ver_resultados(request, trabajador_id, tipo_evaluacion):
-    # Aquí puedes validar que el que mira los resultados sea el mismo trabajador o su jefe
+    # (El resto de la función se mantiene igual)
     trabajador_autenticado = get_object_or_404(Trabajador, user=request.user)
     trabajador_a_ver = get_object_or_404(Trabajador, id_trabajador=trabajador_id)
     

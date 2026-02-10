@@ -1,8 +1,38 @@
 {% extends "cuestionario/base.html" %}
 
-{% block title %}Inicio - {{ trabajador.nombre }}{% endblock %}
+{% block title %}
+    {% if es_admin_sistema %}Inicio - Administración{% else %}Inicio - {{ trabajador.nombre }}{% endif %}
+{% endblock %}
 
 {% block content %}
+    
+    {% if es_admin_sistema %}
+    <section>
+        <header>
+            <h2>Panel de Control - Administrador</h2>
+            <p>Bienvenido, <strong>{{ nombre_usuario }}</strong>.</p>
+        </header>
+        <div class="features">
+            <section>
+                <span class="icon solid major fa-chart-line"></span>
+                <h3>Seguimiento General</h3>
+                <p>Visualiza el estado de las evaluaciones de todos los colaboradores en tiempo real.</p>
+                <ul class="actions">
+                    <li><a href="#" class="button primary disabled">Ir al Seguimiento (Mañana)</a></li>
+                </ul>
+            </section>
+            <section>
+                <span class="icon solid major fa-lock"></span>
+                <h3>Gestión de Usuarios</h3>
+                <p>Accede al panel nativo de Django para gestionar cuentas y permisos.</p>
+                <ul class="actions">
+                    <li><a href="/admin/" class="button">Ir al Admin de Django</a></li>
+                </ul>
+            </section>
+        </div>
+    </section>
+
+    {% else %}
     <section>
         <header>
             <h2>Bienvenid@, {{ trabajador.nombre }} {{ trabajador.apellido_paterno }} {{ trabajador.apellido_materno }}</h2>
@@ -101,6 +131,7 @@
             </div>
         </section>
     </section>
+    {% endif %}
     {% endif %}
 
 {% endblock %}

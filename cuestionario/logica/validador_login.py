@@ -1,15 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-# Importación absoluta para evitar errores de nivel de carpeta
 from cuestionario.models import Trabajador
 
 def login_view(request):
     """
-    Maneja la autenticación de trabajadores usando Email y la clave Mohala2026.
+    Maneja la autenticación permitiendo el paso a Superusuarios y Trabajadores.
     """
     error_message = None
     
-    # 1. Si el usuario ya está logueado, lo mandamos al index
     if request.user.is_authenticated:
         return redirect('index')
 
@@ -17,33 +15,28 @@ def login_view(request):
         correo = request.POST.get('username')
         clave = request.POST.get('password')
         
-        # 2. Autenticar contra la tabla auth_user de Django
         user = authenticate(request, username=correo, password=clave)
         
         if user is not None:
-            # 3. Iniciar sesión en Django
             login(request, user)
             
-            # 4. Verificar que el usuario tenga un perfil de Trabajador asociado
+            # Si es Admin, entra directo. Si no, verifica si es Trabajador.
+            if user.is_superuser:
+                return redirect('index')
+            
             try:
                 Trabajador.objects.get(user=user)
                 return redirect('index')
             except Trabajador.DoesNotExist:
-                error_message = "Usuario válido, pero no existe un registro en la tabla Trabajador."
+                # Si no es admin y no tiene perfil, lo sacamos
+                logout(request)
+                error_message = "Usuario válido, pero no tiene perfil de Trabajador asociado."
         else:
             error_message = "Correo o contraseña incorrectos."
             
-    # 5. Definimos el diccionario de contexto para el template
-    context = {
-        'error': error_message
-    }
-    
-    # 6. Renderizamos usando la ruta que incluye la subcarpeta 'cuestionario'
+    context = {'error': error_message}
     return render(request, 'cuestionario/login.html', context)
 
 def logout_view(request):
-    """
-    Cierra la sesión y redirige al login.
-    """
     logout(request)
     return redirect('login')
