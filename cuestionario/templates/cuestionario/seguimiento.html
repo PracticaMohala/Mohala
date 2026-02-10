@@ -1,23 +1,23 @@
 {% extends "cuestionario/base.html" %}
 
-{% block title %}Seguimiento de Evaluaciones{% endblock %}
+{% block title %}Seguimiento Detallado{% endblock %}
 
 {% block content %}
 <section>
     <header>
-        <h1>Estado del Proceso 2026</h1>
-        <p>Resumen de participación y cumplimiento de evaluaciones.</p>
+        <h1>Seguimiento Detallado</h1>
+        <p>Análisis de cumplimiento por etapa.</p>
     </header>
 
     <div class="row">
         <div class="col-4 col-12-small">
-            <h3>Total: <strong>{{ total }}</strong></h3>
+            <h3>Total: {{ total }}</h3>
         </div>
         <div class="col-4 col-12-small">
-            <h3 style="color: #51ff85;">Listos: <strong>{{ completados }}</strong></h3>
+            <h3 style="color: #51ff85;">Autoevaluaciones: {{ autos_listas }}</h3>
         </div>
         <div class="col-4 col-12-small">
-            <h3 style="color: #ff4d4d;">Faltan: <strong>{{ faltan }}</strong></h3>
+            <h3 style="color: #ffc107;">Ev. Jefatura: {{ jefaturas_listas }}</h3>
         </div>
     </div>
 
@@ -28,18 +28,31 @@
             <thead>
                 <tr>
                     <th>Colaborador</th>
-                    <th>Estado de Evaluación</th>
+                    <th style="text-align: center;">Autoevaluación</th>
+                    <th style="text-align: center;">Ev. Jefatura</th>
                 </tr>
             </thead>
             <tbody>
                 {% for t in trabajadores %}
                 <tr>
-                    <td>{{ t.nombre }} {{ t.apellido_paterno }}</td>
                     <td>
-                        {% if t.finalizado %}
-                            <span style="color: #51ff85;">✅ FINALIZADO</span>
+                        <strong>{{ t.nombre }} {{ t.apellido_paterno }}</strong><br>
+                        <small>{{ t.cargo.nombre_cargo }}</small>
+                    </td>
+                    <td style="text-align: center;">
+                        {% if t.auto_lista %}
+                            <span style="color: #51ff85;">✅ Lista</span>
                         {% else %}
-                            <span style="opacity: 0.6;">⏳ PENDIENTE</span>
+                            <span style="opacity: 0.5;">⏳ Pendiente</span>
+                        {% endif %}
+                    </td>
+                    <td style="text-align: center;">
+                        {% if not t.tiene_jefe %}
+                            <span style="opacity: 0.3;">N/A</span>
+                        {% elif t.jefe_lista %}
+                            <span style="color: #51ff85;">✅ Lista</span>
+                        {% else %}
+                            <span style="color: #ffc107;">⏳ Pendiente</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -49,7 +62,7 @@
     </div>
 
     <ul class="actions">
-        <li><a href="{% url 'index' %}" class="button">Volver al Panel</a></li>
+        <li><a href="{% url 'index' %}" class="button">Volver</a></li>
     </ul>
 </section>
 {% endblock %}
