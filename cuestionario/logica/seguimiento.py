@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from cuestionario.models import Trabajador, Autoevaluacion, EvaluacionJefatura
+from django.db.models import Avg
+from cuestionario.models import Trabajador, Autoevaluacion, EvaluacionJefatura, ResultadoConsolidado
 
 @login_required
 def panel_seguimiento(request):
@@ -9,18 +10,11 @@ def panel_seguimiento(request):
 
     trabajadores = Trabajador.objects.all().select_related('cargo')
     total = trabajadores.count()
-    
-    # Contadores para el resumen
     autos_listas = 0
     jefaturas_listas = 0
 
     for t in trabajadores:
-        # Estado Autoevaluación
-        t.auto_lista = Autoevaluacion.objects.filter(trabajador=t, estado_finalizacion=True).exists()
-        if t.auto_lista:
-            autos_listas += 1
-        
-        # Estado Jefatura (si no tiene jefe, lo marcamos como N/A)
+         # Estado Jefatura
         if t.id_jefe_directo:
             t.tiene_jefe = True
             t.jefe_lista = EvaluacionJefatura.objects.filter(trabajador_evaluado=t, estado_finalizacion=True).exists()
@@ -29,6 +23,18 @@ def panel_seguimiento(request):
         else:
             t.tiene_jefe = False
             t.jefe_lista = False
+        
+        # Estado Autoevaluación
+        t.auto_lista = Autoevaluacion.objects.filter(trabajador=t, estado_finalizacion=True).exists()
+        if t.auto_lista:
+            autos_listas += 1
+
+        # Cálculo de la Brecha
+        t.diff_promedio = None
+        if t.auto_lista and (not t.tiene_jefe or t.jefe_lista):
+            # Calculamos el promedio de la columna diferencia en la tabla consolidada
+            res = ResultadoConsolidado.objects.filter(trabajador=t).aggregate(Avg('diferencia'))
+            t.diff_promedio = res['diferencia__avg']
 
     context = {
         'trabajadores': trabajadores,
