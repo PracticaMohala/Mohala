@@ -1,18 +1,23 @@
 {% extends "cuestionario/base.html" %}
 
+{% block title %}Seguimiento Detallado{% endblock %}
+
 {% block content %}
 <section>
     <header>
-        <h2>Seguimiento Detallado</h2>
-        <p>Total de cuestionarios por realizar: <strong>{{ total_pendientes }}</strong></p>
+        <h1>Seguimiento Detallado</h1>
+        <p>Análisis de cumplimiento y brechas de percepción.</p>
     </header>
 
     <div class="row">
-        <div class="col-6 col-12-small">
-            <h3>Jefaturas listas: {{ jefaturas_listas }}</h3>
+        <div class="col-4 col-12-small">
+            <h3>Total: {{ total }}</h3>
         </div>
-        <div class="col-6 col-12-small">
-            <h3>Autoevaluaciones listas: {{ autos_listas }}</h3>
+        <div class="col-4 col-12-small">
+            <h3 style="color: #ffc107;">Ev. Jefatura: {{ jefaturas_listas }}</h3>
+        </div>
+        <div class="col-4 col-12-small">
+            <h3 style="color: #51ff85;">Autoevaluaciones: {{ autos_listas }}</h3>
         </div>
     </div>
 
@@ -37,25 +42,27 @@
                     </td>
                     <td style="text-align: center;">
                         {% if not t.tiene_jefe %}
-                            <small>N/A</small>
+                            <span style="opacity: 0.3;">N/A</span>
                         {% elif t.jefe_lista %}
-                            <strong>Lista</strong>
+                            <span style="color: #51ff85;">✅ Lista</span>
                         {% else %}
-                            Pendiente
+                            <span style="color: #ffc107;">⏳ Pendiente</span>
                         {% endif %}
                     </td>
                     <td style="text-align: center;">
                         {% if t.auto_lista %}
-                            <strong>Lista</strong>
+                            <span style="color: #51ff85;">✅ Lista</span>
                         {% else %}
-                            Pendiente
+                            <span style="color: #ffc107;">⏳ Pendiente</span>
                         {% endif %}
                     </td>
                     <td style="text-align: center;">
                         {% if t.diff_promedio is not None %}
-                            <strong>{{ t.diff_promedio|stringformat:".2f" }}</strong>
+                            <strong style="color: {% if t.diff_promedio < 0 %}#ff4d4d{% else %}#51ff85{% endif %};">
+                                {{ t.diff_promedio|stringformat:".2f" }}
+                            </strong>
                         {% else %}
-                            <small>---</small>
+                            <span style="opacity: 0.4; font-size: 0.8em;">Pendiente</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -65,7 +72,7 @@
     </div>
 
     <ul class="actions">
-        <li><a href="{% url 'index' %}" class="button">Volver al Panel</a></li>
+        <li><a href="{% url 'index' %}" class="button">Volver</a></li>
     </ul>
 </section>
 {% endblock %}
