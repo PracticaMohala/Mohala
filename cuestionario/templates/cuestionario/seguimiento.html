@@ -1,23 +1,18 @@
 {% extends "cuestionario/base.html" %}
 
-{% block title %}Seguimiento Detallado{% endblock %}
-
 {% block content %}
 <section>
     <header>
-        <h1>Seguimiento Detallado</h1>
-        <p>Análisis de cumplimiento y brechas de percepción.</p>
+        <h2>Seguimiento Detallado</h2>
+        <p>Total de cuestionarios por realizar: <strong>{{ total_pendientes }}</strong></p>
     </header>
 
     <div class="row">
-        <div class="col-4 col-12-small">
-            <h3>Total: {{ total }}</h3>
+        <div class="col-6 col-12-small">
+            <h3>Jefaturas listas: {{ jefaturas_listas }}</h3>
         </div>
-        <div class="col-4 col-12-small">
-            <h3 style="color: #ffc107;">Ev. Jefatura: {{ jefaturas_listas }}</h3>
-        </div>
-        <div class="col-4 col-12-small">
-            <h3 style="color: #51ff85;">Autoevaluaciones: {{ autos_listas }}</h3>
+        <div class="col-6 col-12-small">
+            <h3>Autoevaluaciones listas: {{ autos_listas }}</h3>
         </div>
     </div>
 
@@ -58,11 +53,9 @@
                     </td>
                     <td style="text-align: center;">
                         {% if t.diff_promedio is not None %}
-                            <strong style="color: {% if t.diff_promedio < 0 %}#ff4d4d{% else %}#51ff85{% endif %};">
-                                {{ t.diff_promedio|stringformat:".2f" }}
-                            </strong>
+                            <strong>{{ t.diff_promedio|stringformat:".2f" }}</strong>
                         {% else %}
-                            <span style="opacity: 0.4; font-size: 0.8em;">Pendiente</span>
+                            <small>---</small>
                         {% endif %}
                     </td>
                 </tr>
@@ -72,7 +65,12 @@
     </div>
 
     <ul class="actions">
-        <li><a href="{% url 'index' %}" class="button">Volver</a></li>
+        <li><a href="{% url 'index' %}" class="button">Volver al Panel</a></li>
     </ul>
 </section>
 {% endblock %}
+
+
+
+
+
